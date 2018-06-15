@@ -1,0 +1,6 @@
+#!c:\users\sciserver\onedrive\github\explore-notebook\seek\scripts\python.exe
+# EASY-INSTALL-DEV-SCRIPT: 'scidrive-python-client==0.1.0','sdrv'
+__requires__ = 'scidrive-python-client==0.1.0'
+__import__('pkg_resources').require('scidrive-python-client==0.1.0')
+__file__ = 'c:\\users\\sciserver\\onedrive\\github\\explore-notebook\\seek\\src\\scidrive-python-client\\bin\\sdrv'
+exec(compile(open(__file__).read(), __file__, 'exec'))
