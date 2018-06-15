@@ -9,3 +9,13 @@ values for the celestial object desired.
 ### Cross Identifications
 ### Optical Spectra
 ### MaNGA and APOGEE
+
+>>>
+Documentation of steps taken to build the explore-notebook  // In order  
+>>>
+        • cloned sciserver - SciScript-python  
+        • cloned sciserver - ImgCutout  
+        • Installed sciserver - sciserver through cmd  
+        • Used sciserver insallation to access SciServer databases for querying  
+        • Built querying trial jupyter notebook - Querying.ipynb  
+>>>
