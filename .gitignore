@@ -1,1 +1,4 @@
+git config --global core.excludesfile '~/.ipynb_checkpoints'
+
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
