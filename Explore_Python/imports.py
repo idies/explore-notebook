@@ -14,4 +14,3 @@ from SciScript_Python import py3
 from SciScript_Python.py3 import SciServer
 from SciScript_Python.py3.SciServer import SkyServer, Authentication, CasJobs, SkyQuery
     
-print(x)
