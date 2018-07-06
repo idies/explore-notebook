@@ -1,61 +1,94 @@
 #!/usr/bin/env python import *
 
-from __main__ import *
-from imports import *  
+import os
+import sys
 from Image_Cut_Out import *
+from __main__ import *
+token=Authentication.getToken()
 
-#CASJOBS#
 
     ### getting all values under cross identification with OBJID###
 
-tabel=pd.DataFrame() 
-       
-i=0       
-y=ob_id
-yra=ra
-ydec=dec
-q=None
 
-         #values from table USNO#
+def display_crossid():    
 
-#tabel.loc[i]=['proper_motion', 'mura_err', 'mudec_err', 'angle']
-#i+=1
-
-a=SciServer.CasJobs.executeQuery(sql="select n.propermotion, n.muraerr, n.mudecerr, n.angle from USNO n where n.OBJID=y", context='DR14', format='pandas')
-a=np.transpose(a)
-tabel.loc[i]=[a]
-i+=i        
-        
-        #values from tables WISE_xmatch and WISE_allsky#
-
-#tabel.loc[i]=['wise_cntr','w1mag', 'w2mag', 'w3mag', 'w4mag']        
-#i+=i 
-
-a=SciServer.CasJobs.executeQuery(sql="select h.wise_cntr, t.w1mag, t.w2mag, t.w3mag, t.w4mag, from WISE_xmatch h and WISE_skyall t where h.sdss_objid=y and t.ra=yra and t.dec=ydec",context='DR14',format='pandas')
-a=np.transpose(a)
-tabel.loc[i]=[a]
-i+=i       
-        
-    #values from ROSAT and RC3#
+    print("Cross Identification")
+    tabel=pd.DataFrame(index=[0], columns=['N','V']) 
+    I=0       
+    y=ob_id
+    yra=ra
+    ydec=dec
     
-#tabel.loc[i]=['cps', 'hr1', 'hr2', 'ext', hr1, hr2, ext]
-#i+=1
+    sql_query=("select n.propermotion, n.muraerr, n.mudecerr, n.angle from USNO n where n.OBJID=" + str(y))
+    a=SciServer.CasJobs.executeQuery(sql=sql_query, context='DR14', format='pandas')
+    a=np.transpose(a)
+    if a.empty:
+        print("There's no UNSO data available for this object")    
+    else:
+        tabel.loc[I]=('CATALOG','UNSO'); I+=1;
+        for index,row in a.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1
+    sql_query=("select h.wise_cntr, t.w1mag, t.w2mag, t.w3mag, t.w4mag from WISE_xmatch h, WISE_allsky t where t.ra=" + str(yra) + "and t.dec=" + str(ydec))
+    a=SciServer.CasJobs.executeQuery(sql=sql_query,context='DR14',format='pandas')
+    a=np.transpose(a)
+    if a.empty:
+         print("There's no WISE data available for this object") 
+    else:
+        tabel.loc[I]=('CATALOG','WISE'); I+=1;
+        for index,row in a.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1   
+    sql_query=("select f.peak,f.major,f.minor from FIRST f where f.objID="+str(y))
+    a=SciServer.CasJobs.executeQuery(sql=sql_query,context='DR14',format='pandas')
+    a=np.transpose(a)
+    if a.empty:
+        print("There's no FIRST data available for this object")
+    else:
+        tabel.loc[I]=('CATALOG','FIRST'); I+=1;
+        for index,row in a.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1
+    sql_query=("select j,h,k, phQual from TwoMASS s where s.OBJID="+str(y))
+    a=SciServer.CasJobs.executeQuery(sql=sql_query, context='DR14', format='pandas')
+    a=np.transpose(a)
+    if a.empty:
+        print("There is no TwoMASS data available for this object")
+    else:
+        tabel.loc[I]=('CATALOG','TwoMASS'); I+=1;
+        for index,row in a.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1         
+    q= SciServer.CasJobs.executeQuery(sql=("select q.CPS, q.HR1,q.HR2,q.EXT,q.CAT from ROSAT q where q.OBJID="+ str(y)), context='DR14', format='pandas')
+    if q.empty:
+        print('There is no ROSAT data available for this object')
+    else:
+        tabel.loc[I]=('CATALOG','ROSAT'); I+=1;
+        q=np.transpose(q)
+        for index,row in q.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1
+    sql_query=("select r.HUBBLE, r.M21, r.HI from RC3 r where r.objID="+str(y))
+    q=SciServer.CasJobs.executeQuery(sql=sql_query, context='DR14', format='pandas')
+    if q.empty:
+        print('There is no RC3 data available for this object')
+    else:
+        tabel.loc[I]=('CATALOG','RC3'); I+=1;
+        q=np.transpose(q)
+        for index,row in q.iterrows():
+            tabel.loc[I]=((row.name,row[0]))
+            I+=1
+        tabel.loc[I]=('*','*')
+        I+=1
 
-q= SciServer.CasJobs.executeQuery(sql="select q.CPS, q.HR1,q.HR2,q.EXT,q.CAT,  from RC3 c and ROSAT q where c.objID= q.OBJID= y", context='DR14', format='pandas')
-
-if (q == NONE):
-    print("There is no ROSAT, RC3 data for this object")
-else:
-    tabel.loc[i]=[np.transpose(q)]
-    i+=1
-      
-        
-    #values from tables FIRST and TwoMASS #
-
-#tabel.loc[i]= ['j','h','k', 'phQual']    
-#i+=1    
-
-a=SciServer.CasJobs.executeQuery(sql="select j,h,k, phQual from TwoMASS s and First f where s.OBJID= f.OBJID= y", context='DR14', format='pandas')
-tabel.loc[i]=[np.transpose(a)]
-i+=1
-    
+    return tabel
