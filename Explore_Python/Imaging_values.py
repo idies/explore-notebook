@@ -7,7 +7,7 @@ from __main__ import *
 token=Authentication.getToken()
 
 def display_image():
-    
+
     print("Imaging ")
     x=int(ob_id)
     I=0; i=0;          
@@ -16,7 +16,7 @@ def display_image():
     sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(x))
     a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if a.empty:
-        print("There are no u, g, r, I, z values for this object")
+        print("There are no imaging values for this object")
     else:
         for index,row in a.iterrows():
             Answer.loc[I]=((row.name,row[0]))
@@ -48,7 +48,11 @@ def display_image():
     return Answer
                    
 def link_phobj():
-    
+"""
+
+Definition goes here:
+
+"""
     sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild, b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(x))
     Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if Phobj.empty:
@@ -66,6 +70,7 @@ def link_phtag():
         return Phtag
 
 def link_phz():
+
     sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(x))
     Phz=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if Phz.empty:

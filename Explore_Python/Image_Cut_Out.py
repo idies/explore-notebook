@@ -7,9 +7,12 @@ from __main__ import *
 
 token=Authentication.getToken()
 
-ob_id=1237668296598749280
-ra=197.614455635
-dec=18.438168849
+#ob_id=1237668296598749280
+#ra=197.614455635
+#dec=18.438168849
 
-v=[ob_id,ra,dec]
+#v=[ob_id,ra,dec]
 
+'''
+print object id. spec id, ra and dec WITH their errors. Check for apooge id
+'''
