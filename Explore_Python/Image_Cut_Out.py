@@ -11,8 +11,12 @@ token=Authentication.getToken()
 #ra=197.614455635
 #dec=18.438168849
 
-#v=[ob_id,ra,dec]
 
 '''
-print object id. spec id, ra and dec WITH their errors. Check for apooge id
+print object id, ra, dec, spectral id and other identifiers as needed. check for flags. 
+'''
+
+'''
+
+Also, check if the ID is a valid one
 '''

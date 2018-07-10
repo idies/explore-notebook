@@ -1,4 +1,6 @@
 #!/usr/bin/env python import *
+Photometric values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 import os
 import sys
@@ -7,7 +9,16 @@ from __main__ import *
 token=Authentication.getToken()
 
 def display_image():
+    '''
 
+    :Display the main values for the Imaging portion of the query.
+    :Attributes:: No input needed.
+    :Return:: Pandas data frame with organized values to be printed.
+    Empty table and a warning that no values were found for that query
+    :Raises an exception if the query is invalid.
+    
+    ..seealso::
+    '''
     print("Imaging ")
     x=int(ob_id)
     I=0; i=0;          
@@ -48,11 +59,15 @@ def display_image():
     return Answer
                    
 def link_phobj():
-"""
+    """
 
-Definition goes here:
-
-"""
+    :Display information about the queried object's photo
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame 'Phobj' with organized values
+    :Raises a warning in the event of an distorted image
+    
+    ..seealso::
+    """
     sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild, b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(x))
     Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if Phobj.empty:
@@ -61,7 +76,15 @@ Definition goes here:
         return Phobj
 
 def link_phtag():
-
+    """
+    
+    :Display information about the queried object's tags 
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame 'Phtag' with organized values
+    :Raises a warning in the event of an distorted image
+    
+    ..seealso::
+    """
     sql_query=("select * from PhotoTag g where g.objID=" + str(x))
     Phtag=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease='DR14')))     
     if Phtag.empty:
@@ -70,6 +93,15 @@ def link_phtag():
         return Phtag
 
 def link_phz():
+    """
+    
+    :Display information about the queried object's redshift with an estimated error 
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame 'Phz' with organized values
+    :Raises a warning in the event of an distorted image
+    
+    ..seealso::
+    """
 
     sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(x))
     Phz=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))

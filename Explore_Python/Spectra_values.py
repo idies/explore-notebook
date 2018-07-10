@@ -1,6 +1,6 @@
-
 #!/usr/bin/env python import *
-
+Optical spectrum values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
 import sys
 from Image_Cut_Out import *
@@ -8,6 +8,15 @@ from __main__ import *
 token=Authentication.getToken()
 
 def display_opSpec():
+    """
+    
+    :Display optical spectrum and photo parameters.
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame with organized values to be printed.
+    :Raises a warning in the event of a indiscernible image.
+    
+    ..seealso::
+    """
     
     print("Optical Spectra")
     optspec=pd.DataFrame(index=[0], columns=['N','V'])
@@ -35,6 +44,15 @@ def display_opSpec():
 ##add flag check##
 
 def link_plate():
+     """
+    
+    :Display all attributes of the object observed from a particular image.
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame with organized values.
+    :Raises a warning in the event of a indiscernible image.
+    
+    ..seealso::
+    """
 
     sql_query=('select * from PlateX l where l.specObjID='+ str(z))
     Plate=(np.transpose(SkyServer.sqlSearch(sql=sql_release, dataRelease='DR14')))

@@ -1,5 +1,6 @@
 #!/usr/bin/env python import *
-
+Cross identification values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
 import sys
 from Image_Cut_Out import *
@@ -10,7 +11,16 @@ token=Authentication.getToken()
     ### getting all values under cross identification with OBJID###
 
 
-def display_crossid():    
+def display_crossid():
+    """
+    
+    :Display cross identifications of the celestial body 
+    :Attributes:: No input needed. 
+    :Return:: A pandas data frame with organized values to be printed
+    :Raises a warning if particular values aren't available
+    
+    ..seealso::
+    """
 
     print("Cross Identification")
     tabel=pd.DataFrame(index=[0], columns=['N','V']) 
