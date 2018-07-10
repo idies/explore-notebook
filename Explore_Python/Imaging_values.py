@@ -1,10 +1,11 @@
+# coding: utf-8
 #!/usr/bin/env python import *
-Photometric values
+'''Photometric values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+'''
 import os
 import sys
-from Image_Cut_Out import ob_id
+from Image_Cut_Out import *
 from __main__ import *
 token=Authentication.getToken()
 

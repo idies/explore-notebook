@@ -1,6 +1,8 @@
+# coding: utf-8
 #!/usr/bin/env python import *
-Cross identification values
+'''Cross identification values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
 import os
 import sys
 from Image_Cut_Out import *

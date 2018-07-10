@@ -1,6 +1,8 @@
+# coding: utf-8
 #!/usr/bin/env python import *
-Optical spectrum values
+'''Optical spectrum values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
 import os
 import sys
 from Image_Cut_Out import *
@@ -43,8 +45,8 @@ def display_opSpec():
     
 ##add flag check##
 
-def link_plate():
-     """
+def link_plate():    
+    """
     
     :Display all attributes of the object observed from a particular image.
     :Attributes:: No input needed. 
@@ -53,7 +55,6 @@ def link_plate():
     
     ..seealso::
     """
-
     sql_query=('select * from PlateX l where l.specObjID='+ str(z))
     Plate=(np.transpose(SkyServer.sqlSearch(sql=sql_release, dataRelease='DR14')))
     if Plate.empty:
