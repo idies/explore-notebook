@@ -5,15 +5,12 @@
 '''APOGEE values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
-
-from imports import *
-from fn_imports import *
 from __main__ import *
-token=Authentication.getToken()
+
 
 
 def display_apoge():
-    """
+    ""
     
     :Display the APOGEE values for the object if the verifying flag comes back positive
     :Attributes:: No input needed.
@@ -84,6 +81,7 @@ def display_apoge():
 
 
 def link_visit():
+    print("....")
 
 
 def link_apogestar():
