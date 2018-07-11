@@ -1,31 +1,37 @@
 # coding: utf-8
 #!/usr/bin/env python import *
-'''Photometric values
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Photometric values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Photometric aspects of the celestial body in question.
+
+:param:: 'a' - temporary data frame; arranges query o/p  
+:param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
+'''
+
 import os
 import sys
 from Image_Cut_Out import *
 from __main__ import *
+
 token=Authentication.getToken()
 
 def display_image():
     '''
 
-    :Display the main values for the Imaging portion of the query.
-    :Attributes:: No input needed.
-    :Return:: Pandas data frame with organized values to be printed.
-    Empty table and a warning that no values were found for that query
-    :Raises an exception if the query is invalid.
+    :Display:: Primary values for the imaging portion of the query.
+    :Return:: A pandas' data frame, 'Answer' 
+    :Raise:: an exception in the event of a erroneous object ID.
     
-    ..seealso::
+    ..seealso:: Imaging_values.__doc__
     '''
     print("Imaging ")
-    x=int(ob_id)
-    I=0; i=0;          
+    I=0       
     Answer=pd.DataFrame(index=[0], columns=['N','V'])
         
-    sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(x))
+    sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
     a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if a.empty:
         print("There are no imaging values for this object")
@@ -36,13 +42,13 @@ def display_image():
         Answer.loc[I]=('*','*')
         I+=1
     
-    sql_query=("select z.spiral from zooSpec z where z.objid="+ str(x))
+    sql_query=("select z.spiral from zooSpec z where z.objid="+ str(ob_id))
     a=(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14"))
     if a.empty:
         s=0
     else:
         s=a.index[0]
-    sql_query=("select z.elliptical from zooSpec z where z.objid="+ str(x))
+    sql_query=("select z.elliptical from zooSpec z where z.objid="+ str(ob_id))
     a=(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14"))
     if a.empty:
         e=0
@@ -62,14 +68,13 @@ def display_image():
 def link_phobj():
     """
 
-    :Display information about the queried object's photo
-    :Attributes:: No input needed. 
+    :Display information about the queried object's photo 
     :Return:: A pandas data frame 'Phobj' with organized values
     :Raises a warning in the event of an distorted image
     
-    ..seealso::
+    ..seealso:: Imaging_values.__doc__
     """
-    sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild, b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(x))
+    sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild, b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(ob_id))
     Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if Phobj.empty:
         print("There are no Photo Object values for this object")
@@ -86,7 +91,7 @@ def link_phtag():
     
     ..seealso::
     """
-    sql_query=("select * from PhotoTag g where g.objID=" + str(x))
+    sql_query=("select * from PhotoTag g where g.objID=" + str(ob_id))
     Phtag=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease='DR14')))     
     if Phtag.empty:
         print("There are no tags for this object")
@@ -104,7 +109,7 @@ def link_phz():
     ..seealso::
     """
 
-    sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(x))
+    sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(ob_id))
     Phz=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease="DR14")))
     if Phz.empty:
         print("There are no Photoz values for this object")
