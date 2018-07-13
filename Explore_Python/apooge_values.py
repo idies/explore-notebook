@@ -2,23 +2,32 @@
 # coding: utf-8
 
 #!/usr/bin/env python import *
-'''APOGEE values
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+IR Spectrum values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Infrared spectrum aspects of the celestial body in question.
+
+:param:: 'a' - temporary data frame; consolidates o/p to a single format  
+:param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
+'''
+from img_cut import *
 from __main__ import *
 
-
+token=Authentication.getToken
+#data_release="DR14"
 
 def display_apoge():
-    ""
+    '''
+
+    :Display:: Primary values for the imaging portion of the query.
+    :Return:: A pandas' data frame, 'Answer' 
+    :Raise:: an exception in the event of a erroneous object ID.
     
-    :Display the APOGEE values for the object if the verifying flag comes back positive
-    :Attributes:: No input needed.
-    :Return:: Pandas data frame with organized values to be printed.
-    :Raises an exception if the query is invalid
+    ..seealso:: imaging_values.__doc__
+    '''
     
-    ..seealso::
-    """
     print("APOGEE")
     I=0
     p=apo_id

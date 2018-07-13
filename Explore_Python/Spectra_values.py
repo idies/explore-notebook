@@ -1,24 +1,33 @@
 # coding: utf-8
 #!/usr/bin/env python import *
-'''Optical spectrum values
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Optical Spectrum values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Optical spectrum aspects of the celestial body in question.
+
+:param:: 'a' - temporary data frame; consolidates o/p to a single format  
+:param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
+'''
+
 import os
 import sys
-from Image_Cut_Out import *
+from img_cut import *
 from __main__ import *
+
 token=Authentication.getToken()
+#data_release="DR14"
 
 def display_opSpec():
-    """
+    '''
+
+    :Display:: Primary values for the imaging portion of the query.
+    :Return:: A pandas' data frame, 'Answer' 
+    :Raise:: an exception in the event of a erroneous object ID.
     
-    :Display optical spectrum and photo parameters.
-    :Attributes:: No input needed. 
-    :Return:: A pandas data frame with organized values to be printed.
-    :Raises a warning in the event of a indiscernible image.
-    
-    ..seealso::
-    """
+    ..seealso:: imaging_values.__doc__
+    '''
     
     print("Optical Spectra")
     optspec=pd.DataFrame(index=[0], columns=['N','V'])
