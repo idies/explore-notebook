@@ -5,12 +5,13 @@
 Identification values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:Cross identification aspects of the celestial body in question.
+Cross identification aspects of the celestial body in question.
 
 :param:: 'a' - temporary data frame; consolidates o/p to a single format  
 :param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
 '''
 from img_cut import *
+from imports import *
 from __main__ import *
 
 token=Authentication.getToken()
@@ -22,7 +23,7 @@ def display_crossid():
     :Display:: Primary values for the cross identification section of the query.
     :param:: No input parameters
     :Return:: A pandas' data frame, 'tabel' 
-    :Raise:: Warning for corrupted or missing outputs.
+    :Raise:: Warnings for corrupted or missing values.
     
     ..seealso:: cross_id_values.__doc__
     '''
@@ -47,8 +48,8 @@ def display_crossid():
         a=SciServer.CasJobs.executeQuery(sql=sql_query,context=data_release,format='pandas')
         a=np.transpose(a)
         if a.empty:
-             print("There's no WISE data available for this object")
-                pass
+            print("There's no WISE data available for this object")
+            pass
         else:
             tabel.loc[I]=('CATALOG','WISE'); I+=1;
             for index,row in a.iterrows():
@@ -106,8 +107,8 @@ def display_crossid():
             for index,row in q.iterrows():
                 tabel.loc[I]=((row.name,row[0]))
                 I+=1
-    except:
-        print("unexpected error: " + sys.exc_info()[0])
+    except KeyboardInterrupt:
+        print("Keyboard interrupt in effect. EOF")
         sys.exit()
     else:
         return tabel
