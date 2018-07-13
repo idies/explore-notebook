@@ -5,13 +5,15 @@
 Photometric values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:Photometric aspects of the celestial body in question.
+Photometric aspects of the celestial body in question.
+
 
 :param:: 'a' - temporary data frame; consolidates o/p to a single format  
 :param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
 '''
 
 from img_cut import *
+from imports import *
 from __main__ import *
 
 token=Authentication.getToken()
@@ -22,14 +24,14 @@ def display_image():
 
     :Display:: Primary values for the imaging portion of the query.
     :param:: No input parameters.
-    :Return:: A pandas' data frame, 'Answer'.
+    :Return:: A pandas' data frame, 'imgval'.
     :Raise:: Exception for a KeyboardInterrupt.
     
     ..seealso:: imaging_values.__doc__
     '''
     print("Imaging")
     I=0       
-    Answer=pd.DataFrame(index=[0], columns=['N','V'])
+    imgval=pd.DataFrame(index=[0], columns=['N','V'])
     try:    
         sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g" + 
                "p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
@@ -41,7 +43,7 @@ def display_image():
                 sys.exit()
             else:
                 for index,row in a.iterrows():
-                    Answer.loc[I]=((row.name,row[0]))
+                    imgval.loc[I]=((row.name,row[0]))
                     I+=1
         except:
             print("Unexpected error: "+ sys.exc_info()[0])
@@ -59,18 +61,19 @@ def display_image():
         else:
             e=a.index[0]
         if ((s==1) or (s>e)):
-            Answer.loc[I]=('Morphology','Spiral')
+            imgval.loc[I]=('Morphology','Spiral')
             I+=1
         elif ((e==1) or (e>s)) :
-            Answer.loc[I]=('Morphology','Elliptical')
+            imgval.loc[I]=('Morphology','Elliptical')
             I+=1
         else:
-            Answer.loc[I]=('Morphology','Uncertain')
+            imgval.loc[I]=('Morphology','Uncertain')
             I+=1
-        return Answer
+        return imgval
     except (KeyboardInterrupt):
         print("Keyboard interrupt in effect. EOF")
-    
+        sys.exit()
+        
 def link_phobj():
     '''
 
