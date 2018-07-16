@@ -16,7 +16,6 @@ from imports import *
 from __main__ import *
 
 token=Authentication.getToken()
-#data_release="DR14"
 
 def display_manga():
     '''
