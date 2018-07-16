@@ -10,9 +10,10 @@ import scipy
 import pandas as pd
 import skimage
 import json
+import warnings
 import re
 import SciScript_Python
 from SciScript_Python import py3
 from SciScript_Python.py3 import SciServer
-from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs, LoginPortal
+from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs
 
