@@ -1,7 +1,6 @@
-import imports
-from imports import *
-import fn_imports
-from fn_imports import *
+import os
+import sys
+import warnings
 import getpass
 
 #fix authentication here so it won't be an issue later.
@@ -13,8 +12,7 @@ data_release="DR14"
 try:
     if(Authentication.getToken==None):
         Auth()
-except (TypeError, warnings.warn()) as e:
-    print("Authentication Failed. Please verify your username and password")
+except (warnings.warn("Authentication Failed. Please verify your username and password")) as e:
     Auth()
 else:
     token=Authentication.getToken()
