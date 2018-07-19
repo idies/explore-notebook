@@ -10,7 +10,7 @@ Cross identification aspects of the celestial body in question.
 :param:: 'a' - temporary data frame; consolidates o/p to a single format  
 :param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
 '''
-from img_cut import *
+#from img_cut import *
 from imports import *
 from __main__ import *
 
