@@ -15,10 +15,11 @@ Photometric aspects of the celestial body in question.
 #from img_cut import *
 from imports import *
 from __main__ import *
+from Tests import test1
 
 token=Authentication.getToken()
 
-def display_image():
+def display_image(val=[]):
     '''
 
     :Display:: Primary values for the imaging portion of the query.
@@ -29,7 +30,8 @@ def display_image():
     ..seealso:: imaging_values.__doc__
     '''
     print("Imaging")
-    I=0       
+    I=0
+    ob_id=val[0]
     imgval=pd.DataFrame(index=[0], columns=['N','V'])
     try:    
         sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g" + 
@@ -84,7 +86,7 @@ def link_phobj():
     ..seealso:: imaging_values.__doc__
     '''
     sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild" +
-               "b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(ob_id))
+               "b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(test1.ob_id))
     Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
     try:        
         if Phobj.empty:
@@ -104,7 +106,7 @@ def link_phtag():
     
     ..seealso:: imaging_values.__doc__
     '''
-    sql_query=("select * from PhotoTag g where g.objID=" + str(ob_id))
+    sql_query=("select * from PhotoTag g where g.objID=" + str(test1.ob_id))
     Phtag=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))     
     try:        
         if Phtag.empty:
@@ -125,7 +127,7 @@ def link_phz():
     ..seealso:: imaging_values.__doc__
     '''
 
-    sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(ob_id))
+    sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(test1.ob_id))
     Phz=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
     try:        
         if Phz.empty:

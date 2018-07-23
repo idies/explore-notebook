@@ -18,7 +18,7 @@ from __main__ import *
 
 token=Authentication.getToken
 
-def display_apoge():
+def display_apoge(val=[]):
     '''
 
     :Display:: Primary values for the infrared spectrum section of the query.
@@ -31,8 +31,8 @@ def display_apoge():
     
     print("APOGEE")
     I=0
-    p=apo_id
-    p_id=ob_id
+    apo_id=val[3]
+    p_id=val[0]
     Apoge=pd.DataFrame(index=[0], columns=['N','V'])
     try:
         sql_query=("select p.j,p.j_err,p.h,p.h_err,p.k,p.k_err, p.irac_4_5, p.irac_4_5_err, p.src_4_5 from apogeeObject p where p.apogee_id= " + str(apo_id))
