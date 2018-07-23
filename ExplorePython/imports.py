@@ -9,11 +9,13 @@ from io import StringIO, BytesIO
 import scipy
 import pandas as pd
 import skimage
+import matplotlib.pyplot as plt
+import matplotlib.img as imgm
 import json
 import warnings
 import re
-import SciScript_Python
-from SciScript_Python import py3
-from SciScript_Python.py3 import SciServer
+# import SciScript_Python
+# from SciScript_Python import py3
+# from SciScript_Python.py3 import SciServer
 from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs
 
