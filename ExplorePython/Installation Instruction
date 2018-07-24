@@ -1,13 +1,13 @@
 
-<b><i>Instructions to download and install the SDSS 'explore' tool.</i></b>
+#**Instructions to download and install the SDSS 'explore' tool.**
 
 >>>
 1.Install the 'twine' package
-    <i> #pip install twine </i>
+    _eg. pip install twine_
 2.Clone Github repo
-    <i>#git clone github/idies/explore-notebook </i>
+    _eg. git clone github/idies/explore-notebook_
 3.Run setup.py
-    <i>#python setup.py build</i>
+    _eg. python setup.py build_
     
 
 
