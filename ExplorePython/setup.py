@@ -10,6 +10,7 @@
 import io
 import os
 import sys
+from setuptools import setup
 from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
@@ -29,9 +30,7 @@ REQUIRED = [ 'numpy', 'scipy', 'pandas', 'matplotlib'
 ]
 
 # What packages are optional?
-EXTRAS = { 'skimage', 'jupyter notebook'
-
-}
+EXTRAS = {}
 
 # The rest you shouldn't have to touch too much :)
 # ------------------------------------------------
@@ -66,7 +65,7 @@ class UploadCommand(Command):
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print('\033[1m\0;31m'.format(s))
+        print('[\033[1;31;40m'.format(s))
 
     def initialize_options(self):
         pass
@@ -100,12 +99,12 @@ setup(
     version=about['__version__'],
     description=DESCRIPTION,
     long_description=DESCRIPTION,
-    long_description_content_type='text/markdown',
+    long_description_content_type='string/text/markdown',
     author=AUTHOR,
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(exclude=('Tests',)),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
@@ -113,7 +112,7 @@ setup(
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
     install_requires=REQUIRED,
-    extras_require=EXTRAS,
+    #extras_require=EXTRAS,
     include_package_data=True,
     license='MIT',
     classifiers=[
