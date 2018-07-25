@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e14a32a5-0a4a-4dfb-b52d-7fb697048a78" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExplorePython/Querying.ipynb" afterPath="$PROJECT_DIR$/ExplorePython/Querying.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExplorePython/Search_function.ipynb" afterPath="$PROJECT_DIR$/ExplorePython/Search_function.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExplorePython/setup.py" afterPath="$PROJECT_DIR$/ExplorePython/setup.py" />
-    </list>
+    <list default="true" id="e14a32a5-0a4a-4dfb-b52d-7fb697048a78" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +36,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="70" />
     <option name="y" value="-8" />
     <option name="width" value="966" />
@@ -314,8 +310,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="-8" width="1304" height="784" extended-state="7" />
-    <editor active="true" />
+    <frame x="70" y="-8" width="1304" height="784" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18400621" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
