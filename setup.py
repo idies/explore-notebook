@@ -17,7 +17,7 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'ExplorePython'
-DESCRIPTION = 'Explore tool for SDSS. Used in SkyServer.'
+DESCRIPTION = 'Explore tool for SDSS. Used in the SkyServer section.'
 URL = 'https://github.com/idies/explore-notebook'
 EMAIL = 'jmalani@outlook.com'
 AUTHOR = 'Juhi Malani'
@@ -25,7 +25,7 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '2.0'
 
 # What packages are required for this module to be executed?
-REQUIRED = [ 'numpy', 'scipy', 'pandas', 'matplotlib'
+REQUIRED = [ 'numpy', 'scipy', 'pandas', 'matplotlib', 'getpass', 'twine'
     # 'requests', 'maya', 'records',
 ]
 
@@ -112,13 +112,13 @@ setup(
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
     install_requires=REQUIRED,
-    #extras_require=EXTRAS,
+    extras_require=EXTRAS,
     include_package_data=True,
     license='MIT',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: MIT License',
+        'License :: IDIES Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
