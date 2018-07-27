@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 #git clone @github.com:idies/explore-notebook.git
@@ -12,10 +12,10 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'ExplorePython'
+NAME = 'explore-notebook'
 DESCRIPTION = 'Explore tool for SDSS. Used in the SkyServer section.'
 URL = 'https://github.com/idies/explore-notebook'
-EMAIL = 'jmalani@outlook.com'
+EMAIL = 'juhi.malani@outlook.com'
 AUTHOR = 'Juhi Malani (@Variegatedq)'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '2.0'
@@ -35,7 +35,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 # except FileNotFoundError:
 #     long_description = DESCRIPTION
 
-# Load the package's __version__.py module as a dictionary.
+"""Load the package's __version__.py module as a dictionary."""
 about = {}
 if not VERSION:
     with open(os.path.join(here, NAME, '__version__.py')) as f:
