@@ -17,7 +17,7 @@ def Auth():
 
 try:
 	if(Authentication.getToken==None):
-	Auth()
+		Auth()
 except (TypeError, None) as e:
 	print("Authentication failed. Please verify your username and password and try again.");
 	Auth()
