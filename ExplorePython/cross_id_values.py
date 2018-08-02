@@ -10,9 +10,9 @@ Cross identification aspects of the celestial body in question.
 :param:: 'a' - temporary data frame; consolidates o/p to a single format  
 :param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
 '''
+
 #from img_cut import *
 from imports import *
-from __main__ import *
 
 token=Authentication.getToken()
 
@@ -33,7 +33,7 @@ def display_crossid(val=[]):
     tabel=pd.DataFrame(index=[0], columns=['N','V']) 
     I=0       
     try:    
-        sql_query=("select n.propermotion, n.muraerr, n.mudecerr, n.angle from USNO n where n.OBJID=" + str(ob_id))
+        sql_query=("select PROPERMOTION, MURAERR, MUDECERR, ANGLE from USNO where OBJID=" + ob_id)
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
         a=np.transpose(a)
         if a.empty:
@@ -46,7 +46,7 @@ def display_crossid(val=[]):
                 I+=1
             tabel.loc[I]=('*','*')
             I+=1
-        sql_query=("select h.wise_cntr, t.w1mag, t.w2mag, t.w3mag, t.w4mag from WISE_xmatch h, WISE_allsky t where t.ra=" + str(ra) + "and t.dec=" + str(dec))
+        sql_query=("select t.cntr, t.w1mag, t.w2mag, t.w3mag, t.w4mag from WISE_allsky t where t.ra=" + str(ra) + "and t.dec=" + str(dec))
         a=SciServer.CasJobs.executeQuery(sql=sql_query,context=data_release,format='pandas')
         a=np.transpose(a)
         if a.empty:
@@ -109,8 +109,12 @@ def display_crossid(val=[]):
             for index,row in q.iterrows():
                 tabel.loc[I]=((row.name,row[0]))
                 I+=1
-    except KeyboardInterrupt:
-        print("Keyboard interrupt in effect. EOF")
-        sys.exit()
+    except TimeoutError as e:
+        print("Request timed out. Please check the request or increase the queue")
+#         if (e==500):
+#             pass
+#         else:
+#             raise ErrorCode("The server is unable to process your request. Please try again later")
     else:
         return tabel
+    

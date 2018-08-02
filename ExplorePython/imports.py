@@ -6,12 +6,6 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from setuptools import setup, find_packages
-setup(
-    name = "SciServer",
-    version = "1.10.2",
-    packages = find_packages(),
-)
 
 import numpy as np
 import io
@@ -20,12 +14,19 @@ import scipy
 import pandas as pd
 import skimage
 import matplotlib.pyplot as plt
-import matplotlib.img as imgm
+import matplotlib.image as imgm
 import json
 import warnings
 import re
-# import SciScript_Python
+import SciServer
 # from SciScript_Python import py3
 # from SciScript_Python.py3 import SciServer
 from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs
+
+from setuptools import setup, find_packages
+setup(
+    name = "ExplorePython",
+    version = "2.0.0",
+    packages = find_packages(),
+)
 

@@ -14,8 +14,6 @@ Photometric aspects of the celestial body in question.
 
 #from img_cut import *
 from imports import *
-from __main__ import *
-from Tests import test1
 
 token=Authentication.getToken()
 
@@ -31,9 +29,10 @@ def display_image(val=[]):
     '''
     print("Imaging")
     I=0
+    data_release=val[4]
     ob_id=val[0]
     imgval=pd.DataFrame(index=[0], columns=['N','V'])
-    try:    
+    try:   
         sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g" + 
                "p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
         a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
@@ -71,10 +70,14 @@ def display_image(val=[]):
             imgval.loc[I]=('Morphology','Uncertain')
             I+=1
         return imgval
-    except (KeyboardInterrupt):
-        print("Keyboard interrupt in effect. EOF")
-        sys.exit()
-        
+    except TimeoutError as e:
+        print("Server timed out. Please verify your query or increase queue")
+#         if (e==500):
+#             pass
+#         else:
+#             raise ErrorCode("The server is unable to process your request. Please try again later")
+
+
 def link_phobj():
     '''
 
