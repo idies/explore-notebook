@@ -13,8 +13,6 @@ Optical spectrum aspects of the celestial body in question.
 
 #from img_cut import *
 from imports import *
-from __main__ import *
-from Tests import test1
 
 token=Authentication.getToken()
 
@@ -33,6 +31,7 @@ def display_opspec(val=[]):
     optspec=pd.DataFrame(index=[0], columns=['N','V'])
     I=0
     ob_id=val[0]
+    data_release=val[4]
     ra=val[1]
     dec=val[2]
     specID=val[3]
@@ -55,10 +54,12 @@ def display_opspec(val=[]):
             pass
         else:
             print(b)
-    except KeyboardInterrupt:
-        print("Keyboard interrupt in effect. EOF")
-        sys.exit()
-
+    except TimeoutError as e:
+        print("Request timed out. Please check the request or increase the queue")
+#         if (e==500):
+#             pass
+#         else:
+#             raise ErrorCode("The server is unable to process your request. Please try again later")
 
 def link_plate():    
     """
