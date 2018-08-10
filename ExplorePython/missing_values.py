@@ -1,15 +1,21 @@
 #coding: utf-8
 #!/usr/bin/env python import *
 
-import os, sys, pandas, getpass
-from SciServer import CasJobs, Authentication, SkyServer
-
+from SciServer import Authentication, LoginPortal
 '''
 python file containing miscellaneous functions
 this file can be accessed by all other display functions
 '''
-token=Authentication.getToken()
-
+try:
+    token=Authentication.getToken()
+    if token is None:
+        mv.Auth()
+except (NameError, TypeError) as e:
+    print(str(e)+" Please verify your credentials and try again")
+    mv.Auth()
+else:
+    token = Authentication.getToken()
+    
 def get_objid(ra=0, dec=0):
     '''
     Returns:: big int object_id from given ra and dec of the object
@@ -67,13 +73,14 @@ def Auth():
     try:
         auth_username=getpass.getpass('User Name: ')
         auth_pass=getpass.getpass('Password: ')
-        token3=Authentication.login(auth_username,auth_pass)
-        token=Authentication.getToken()
+        token=Authentication.login(auth_username,auth_pass)
     except (ValueError, TypeError) as e:
         print(str(e) + "Please verify your username and password and try again")
         Auth()
-
-    return 0
+    else:
+        token=Authentication.getToken()
+        return 0
+    
 
 def display_image(ra=197.614455635, dec=18.438168849):
     ra1=ra; dec1=dec

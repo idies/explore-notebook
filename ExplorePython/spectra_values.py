@@ -16,7 +16,7 @@ from imports import *
 
 token=Authentication.getToken()
 
-def display_opspec(val=[]):
+def display_opspec(specID=0, ra=0, dec=0, data_release="DR14"):
     '''
 
     :Display:: Primary values for the optical spectrum portion of the query.
@@ -30,11 +30,9 @@ def display_opspec(val=[]):
     print("Optical Spectra")
     optspec=pd.DataFrame(index=[0], columns=['N','V'])
     I=0
-    ob_id=val[0]
-    data_release=val[4]
-    ra=val[1]
-    dec=val[2]
-    specID=val[3]
+    if(specID is 0 and ra is not 0):
+        specID=mv.get_specid(ra,dec)
+    
     try:
         sql_query=("select a.specObjID, a.fiberID, a.mjd, a.plate, a.survey, a.programname, a.instrument,a.sourceType,a.z, a.zErr, a.class, a.velDisp, a.velDispErr from SpecObjAll a where a.specObjID=" +str(specID))
         a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))

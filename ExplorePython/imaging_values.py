@@ -17,7 +17,7 @@ from imports import *
 
 token=Authentication.getToken()
 
-def display_image(val=[]):
+def display_image(ob_id=0, ra=0, dec=0, data_release="DR14"):
     '''
 
     :Display:: Primary values for the imaging portion of the query.
@@ -29,8 +29,7 @@ def display_image(val=[]):
     '''
     print("Imaging")
     I=0
-    data_release=val[4]
-    ob_id=val[0]
+
     imgval=pd.DataFrame(index=[0], columns=['N','V'])
     try:   
         sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g" + 

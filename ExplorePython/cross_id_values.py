@@ -16,7 +16,7 @@ from imports import *
 
 token=Authentication.getToken()
 
-def display_crossid(val=[]):
+def display_crossid(ob_id=0, ra=0, dec=0, data_release="DR14"):
     '''
 
     :Display:: Primary values for the cross identification section of the query.
@@ -27,9 +27,7 @@ def display_crossid(val=[]):
     ..seealso:: cross_id_values.__doc__
     '''
     print("Cross Identification")
-    ob_id=val[0]
-    ra=val[1]
-    dec=val[2]
+    
     tabel=pd.DataFrame(index=[0], columns=['N','V']) 
     I=0       
     try:    
