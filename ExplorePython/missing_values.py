@@ -2,7 +2,7 @@
 #!/usr/bin/env python import *
 
 import os, sys, pandas, getpass
-from SciServer import CasJobs, Authentication
+from SciServer import CasJobs, Authentication, SkyServer
 
 '''
 python file containing miscellaneous functions
@@ -74,3 +74,18 @@ def Auth():
         Auth()
 
     return 0
+
+def display_image(ra=197.614455635, dec=18.438168849):
+    ra1=ra; dec1=dec
+    pixel_scale=0.2
+    img = SkyServer.getJpegImgCutout(ra=ra1, dec=dec1, scale = pixel_scale) 
+    #plt.savefig(plt.imshow(img), bbox_inches='tight')
+    #img, (a, b) = plt.subplots()
+    fig=plt.imshow(img, interpolation = 'nearest')
+    fig.axes.get_xaxis().set_visible(False)
+    fig.axes.get_yaxis().set_visible(False)
+    #fig.set_axisbelow(True)
+    #plt.yaxis.grid(linestyle='dashed')
+    #plt.grid(b=True, which='major', axis='both', ls='-')
+    plt.show()
+        
