@@ -14,9 +14,9 @@ Optical spectrum aspects of the celestial body in question.
 #from img_cut import *
 from imports import *
 
-token=Authentication.getToken()
+token=Authentication.getToken
 
-def display_opspec(specID=0, ra=0, dec=0, data_release="DR14"):
+def display_opspec(specID=0, ra=0, dec=0):
     '''
 
     :Display:: Primary values for the optical spectrum portion of the query.
@@ -46,12 +46,12 @@ def display_opspec(specID=0, ra=0, dec=0, data_release="DR14"):
             return optspec
     
         sql_query=('select img from SpecObjAll a where a.specObjID='+str(specID))
-        b=SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)
-        if b.empty:
-            print("There is no image for this object")
-            pass
-        else:
-            print(b)
+        print(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
+#         if b.empty:
+#             print("There is no image for this object")
+#             pass
+#         else:
+#             print(b)
     except TimeoutError as e:
         print("Request timed out. Please check the request or increase the queue")
 #         if (e==500):
@@ -70,12 +70,11 @@ def link_plate():
     ..seealso:: spectra_values.__doc__
     """
     try:
-        sql_query=('select * from PlateX l where l.specObjID='+ str(test1.specID))
+        sql_query=('select * from PlateX l where l.specObjID='+ str(specID))
         Plate=(np.transpose(SkyServer.sqlSearch(sql=sql_release, dataRelease=data_release)))
         if Plate.empty:
             raise ValueError("There are no Plate values for this object")
         else:
             return Plate
-    except:
-        print("Unexpected error: "+ str(sys.exc_info()[0]))
-        
+    except TimeoutError:
+        print("Timeout error: Please increase queue or verify your request before trying again. ")

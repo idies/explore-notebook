@@ -16,7 +16,7 @@ from imports import *
 
 token=Authentication.getToken()
 
-def display_crossid(ob_id=0, ra=0, dec=0, data_release="DR14"):
+def display_crossid(ob_id=0, ra=197.614455635, dec=18.438168849):
     '''
 
     :Display:: Primary values for the cross identification section of the query.
@@ -27,11 +27,11 @@ def display_crossid(ob_id=0, ra=0, dec=0, data_release="DR14"):
     ..seealso:: cross_id_values.__doc__
     '''
     print("Cross Identification")
-    
+    print(ob_id)
     tabel=pd.DataFrame(index=[0], columns=['N','V']) 
     I=0       
     try:    
-        sql_query=("select PROPERMOTION, MURAERR, MUDECERR, ANGLE from USNO where OBJID=" + ob_id)
+        sql_query=("select PROPERMOTION, MURAERR, MUDECERR, ANGLE from USNO where OBJID=" + str(ob_id))
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
         a=np.transpose(a)
         if a.empty:
@@ -96,7 +96,7 @@ def display_crossid(ob_id=0, ra=0, dec=0, data_release="DR14"):
                 I+=1
             tabel.loc[I]=('*','*')
             I+=1
-        sql_query=("select r.HUBBLE, r.M21, r.HI from RC3 r where r.objID="+str(y))
+        sql_query=("select r.HUBBLE, r.M21, r.HI from RC3 r where r.objID="+str(ob_id))
         q=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
         if q.empty:
             print('There is no RC3 data available for this object')

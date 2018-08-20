@@ -14,11 +14,10 @@ Infrared spectrum aspects of the celestial body in question.
 '''
 #from img_cut import *
 from imports import *
-from __main__ import *
 
 token=Authentication.getToken
 
-def display_apoge(val=[]):
+def display_apoge(apo_id=0):
     '''
 
     :Display:: Primary values for the infrared spectrum section of the query.
@@ -28,7 +27,6 @@ def display_apoge(val=[]):
     
     ..seealso:: apogee_values.__doc__
     '''
-    
     print("APOGEE")
     I=0
     apo_id=val[3]
@@ -89,7 +87,7 @@ def display_apoge(val=[]):
             I+=1
     except:
         print("Unexpected error: "+ str(sys.exc_info()[0]))
-        sys.exit()
+        return None
     else:    
         return Apoge    
 
@@ -107,7 +105,7 @@ def link_apogestar():
             pass
     except:
         print("Unexpected error: " + str(sys.exc_info()[0]))
-        sys.exit()        
+        return None
     else:
         return a
 
@@ -120,8 +118,6 @@ def link_aspcap():
             pass
     except:
         print("Unexpected error: " + str(sys.exc_info()[0]))
-        sys.exit()
-        
+        return None
     else:
         return a
-

@@ -17,7 +17,7 @@ from imports import *
 
 token=Authentication.getToken()
 
-def display_image(ob_id=0, ra=0, dec=0, data_release="DR14"):
+def display_image(ob_id=0, ra=197.614455635, dec=18.438168849):
     '''
 
     :Display:: Primary values for the imaging portion of the query.
@@ -32,20 +32,20 @@ def display_image(ob_id=0, ra=0, dec=0, data_release="DR14"):
 
     imgval=pd.DataFrame(index=[0], columns=['N','V'])
     try:   
-        sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g" + 
-               "p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
+        sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g," + " p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
         a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
+        print(a)
         try:
             if a.empty:
                 print("Warning: There is no imaging data for this object. " + 
                       "Indistinct features hinder observations. Check input and try again ")
-                sys.exit()
+                return 0
             else:
                 for index,row in a.iterrows():
                     imgval.loc[I]=((row.name,row[0]))
                     I+=1
-        except:
-            print("Unexpected error: "+ sys.exc_info()[0])
+        except Exception:
+            print("Unexpected error: "+ str(sys.exc_info()[0]))
             sys.exit()
         sql_query=("select z.spiral from zooSpec z where z.objid="+ str(ob_id))
         a=(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
@@ -60,24 +60,25 @@ def display_image(ob_id=0, ra=0, dec=0, data_release="DR14"):
         else:
             e=a.index[0]
         if ((s==1) or (s>e)):
-            imgval.loc[I]=('Morphology','Spiral')
+            imgval.iloc[I]=('Morphology','Spiral')
             I+=1
         elif ((e==1) or (e>s)) :
-            imgval.loc[I]=('Morphology','Elliptical')
+            imgval.iloc[I]=('Morphology','Elliptical')
             I+=1
         else:
-            imgval.loc[I]=('Morphology','Uncertain')
+            imgval.iloc[I]=('Morphology','Uncertain')
             I+=1
         return imgval
     except TimeoutError as e:
         print("Server timed out. Please verify your query or increase queue")
+        return ""
 #         if (e==500):
 #             pass
 #         else:
 #             raise ErrorCode("The server is unable to process your request. Please try again later")
 
 
-def link_phobj():
+def link_phobj(ob_id=0,ra=197.614455635, dec=18.438168849):
     '''
 
     :Display:: Values for sidebar link, PhotoObj.
@@ -87,8 +88,7 @@ def link_phobj():
     
     ..seealso:: imaging_values.__doc__
     '''
-    sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild" +
-               "b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(test1.ob_id))
+    sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild" +"b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(test1.ob_id))
     Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
     try:        
         if Phobj.empty:
@@ -97,6 +97,7 @@ def link_phobj():
             return Phobj
     except:
         print("Unexpected error: " + sys.exc_info()[0])
+        return 0
         
 def link_phtag():
     '''
@@ -117,6 +118,7 @@ def link_phtag():
             return Phtag
     except:
         print("Unexpected error: " + str(sys.exc_info()[0]))
+        return 0
 
 def link_phz():
     '''
@@ -138,3 +140,4 @@ def link_phz():
             return Phz
     except:
         print("Unexpected error: "+ print(sys.exc_info()[0]))
+        return 0

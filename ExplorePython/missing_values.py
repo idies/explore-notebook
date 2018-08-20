@@ -1,7 +1,8 @@
 #coding: utf-8
 #!/usr/bin/env python import *
 
-from SciServer import Authentication, LoginPortal
+import imports
+from imports import *
 '''
 python file containing miscellaneous functions
 this file can be accessed by all other display functions
@@ -16,7 +17,7 @@ except (NameError, TypeError) as e:
 else:
     token = Authentication.getToken()
     
-def get_objid(ra=0, dec=0):
+def get_objid(ra=197.614455635, dec=18.438168849):
     '''
     Returns:: big int object_id from given ra and dec of the object
     input:: ra(right ascension), dec(declination)
@@ -25,20 +26,26 @@ def get_objid(ra=0, dec=0):
     if(ra==0 or dec==0):
         print("Missing: function arguments(ra,dec)")
         return 0
+    if (ra is 197.614455635 and dec is 18.438168849):
+        print("Invalid input argument. Display: Default object specs displayed")
     x=pd.DataFrame(index=[0], columns=["N","V"])
     x["N"]=pd.Series([], dtype=str)
     x["V"]=pd.Series([], dtype=object)
 
     sql_query='select * from fGetNearestObjEq(' + str(ra) + ',' + str(dec)+ ', 0.2)'
-
     x=CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
-    objid=(x.iloc[0])
-    if (objid==None):
-        print("No object id found. Please verify values and try again")
+   
+    t=float(x["objID"])
+    t1=f'{t:.0f}'
+    objid=float(t1)
+    view(x)
+    if (bool(objid) is False):
+        print("No object id found. Please verify argument parameters and try again")
         return 0
-    return objid
+    else:
+        return objid
 
-def get_specid(ra=0, dec=0):
+def get_specid(ra=197.614455635, dec=18.438168849):
     '''
     Derives spectral id when just ra and dec are available
     Returns:: big int specid storing the IR and optical spectrum values for the chosen object
@@ -48,17 +55,22 @@ def get_specid(ra=0, dec=0):
     if (ra==0 or dec==0):
         print("Missing: function arguments (ra,dec)")
         return 0
+    if (ra is 197.614455635 and dec is 18.438168849):
+        print("Invalid input argument. Display: Default object specs displayed")
     x=pd.DataFrame(index=[0], columns=["N","V"])
     x["N"]=pd.Series([], dtype=str)
     x["V"]=pd.Series([], dtype=object)
 
     sql_query="select * from fGetNearestSpecObjEq(" + str(ra) + "," + str(dec)+  ", 0.2)"
     x=CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
-    specid=x.iloc[0]
-    if (specid==None):
-        print("No spectrum id found. Please verify values and try again")
+    t=float(x['specObjID'])
+    t1=f'{t:.0f}'
+    specid=float(t1)
+    if (bool(specid) is False):
+        print("No spectrum id found. Please verify argument parameters and try again")
         return 0
-    return specid
+    else:
+        return specid
 
 def Auth():
     '''
@@ -82,7 +94,9 @@ def Auth():
         return 0
     
 
-def display_image(ra=197.614455635, dec=18.438168849):
+def display_obj_image(ra=197.614455635, dec=18.438168849):
+    if (ra is 197.614455635 and dec is 18.438168849):
+        print("Invalid input argument. Display: Default object specs")    
     ra1=ra; dec1=dec
     pixel_scale=0.2
     img = SkyServer.getJpegImgCutout(ra=ra1, dec=dec1, scale = pixel_scale) 
@@ -95,4 +109,18 @@ def display_image(ra=197.614455635, dec=18.438168849):
     #plt.yaxis.grid(linestyle='dashed')
     #plt.grid(b=True, which='major', axis='both', ls='-')
     plt.show()
-        
+    
+def view(df):
+    css = """<style>
+    table { border-collapse: collapse; border: 3px solid #eee; }
+    table tr th:first-child { background-color: #eee; color: #333; font-weight: bold }
+    table thead th { background-color: #eee; color: #000; }
+    tr, th, td { border: 1px solid #ccc; border-width: 1px 0 0 1px; border-collapse: collapse;
+    padding: 3px; font-family: monospace; font-size: 10px }</style>
+    """
+    s  = '<script type="text/Javascript">'
+    s += 'var win = window.open("", "Title", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=780, height=200, top="+(screen.height-400)+", left="+(screen.width-840));'
+    s += 'win.document.body.innerHTML = \'' + (df.to_html() + css).replace("\n",'\\') + '\';'
+    s += '</script>'
+
+    return(HTML(s+css))

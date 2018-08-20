@@ -13,11 +13,10 @@ Spectrum values observed using IFU(Integral Field Units) for the celestial body 
 
 #from img_cut import *
 from imports import *
-from __main__ import *
 
 token=Authentication.getToken()
 
-def display_manga():
+def display_manga(manga_id=0):
     '''
 
     :Display:: Primary values for the MaNGA portion of the query.
@@ -30,10 +29,9 @@ def display_manga():
     
     print("MaNGA") 
     I=0
-    manga=pd.dataFrame(index=[0], columns=['N','V'])
+    manga=pd.DataFrame(index=[0], columns=['N','V'])
     try:
-        sql_query=("select h.ifura, h.ifudec, h.mangaid, h.mngtarg1, h.mngtarg2, h.mngtarg3,h.objdec"+
-                   " h.objra, h.plateifu, h.mjdmax, h.redsn2. h.drp3qual, h.bluesn2 from manDrpAll h where h.mangaid=" + str(manga_id))
+        sql_query=("select h.ifura, h.ifudec, h.mangaid, h.mngtarg1, h.mngtarg2, h.mngtarg3,h.objdec,"+" h.objra, h.plateifu, h.mjdmax, h.redsn2. h.drp3qual, h.bluesn2 from manDrpAll h where h.mangaid=" + str(manga_id))
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format='pandas')
         a=np.transpose(a)
         if a.empty:
@@ -46,6 +44,6 @@ def display_manga():
                 I+=1
     except KeyboardInterrupt:
         print("Keyboard interrupt in effect.EOF")
-        sys.exit()
+        return None
     else:
         return manga
