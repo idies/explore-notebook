@@ -1,6 +1,11 @@
 # coding: utf-8
 #!/usr/bin/env python
 
+'''
+Python file that contains all the packages needed to execute the explore tool.
+It's all in one file so that importing modules runs smoother.
+'''
+
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -20,4 +25,8 @@ import warnings
 import re
 import SciServer
 from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs
-import missing_values as mv
+import argparse
+import html
+from IPython.display import HTML
+'''Data Release version is currently set to DR14. DR15 rolls out 11/2018'''
+data_release="DR14"
