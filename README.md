@@ -1,14 +1,18 @@
 # SDSS Explore Tool
 
-[Sloan Digita Sky Servey](https://www.sdss.org) is an multi-spectral imaging and reshift survey conducted using a dedicated telescope at the Apache Point Observatory in New Mexico, USA[[1]][1]
+[Sloan Digita Sky Servey](https://www.sdss.org) is an multi-spectral imaging and reshift survey conducted using a dedicated telescope at the Apache Point Observatory in New Mexico, USA[[1]]
 
-This information was processed and used to create the most detailed thee-dimensional maps of the skies with information for more than *three million* celestial bodies. 
+They processed the imformation gathered and used it to create the most detailed thee-dimensional maps of the skies with information for more than *three million* celestial bodies. 
 
-_for more information, please refer to our [wiki](https://github.com/idies/explore-notebook/wiki)_
+The Explore tool is a part of their effort to make this data accessible and palatable for educators, researchers and ametuers alike.    
+
+_for more information, and even more tools, check out [SciServer](sciserver.org) (v2.0.0).
+
+__we'd love to hear from you so feel free to send us an email at [INSERT EMAIL HERE]()__
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -54,7 +58,7 @@ Give an example
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+The Jupyter Notebook itself can be rendered in different static formats(HTML,LaTeX,PDF,reStructuredText, and slide-shows[[2]]) with Jupyter's '''_[nbconvert](https://github.com/jupyter/nbconvert)_''' utility and/or a [nbviewer](http://nbviewer.jupyter.org/). [MyBinder.org](mybinder.org). These methods provide users with freedom to play around with the repo without having to go to ther trouble of installing and configuring the Jupyter Notebook.  
 
 
 ## Contributing
@@ -83,3 +87,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 
 [1]: https://en.wikipedia.org/wiki/Sloan_Digital_Sky_Survey
+[2]: https://revealjs.com/#/
