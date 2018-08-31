@@ -14,10 +14,10 @@ Photometric aspects of the celestial body in question.
 
 #from img_cut import *
 from imports import *
-
+import new
 token=Authentication.getToken()
 
-def display_image(ob_id=0, ra=197.614455635, dec=18.438168849):
+def display_image(ob_id=1237668296598749280, ra=197.614455635, dec=18.438168849):
     '''
 
     :Display:: Primary values for the imaging portion of the query.
@@ -29,6 +29,8 @@ def display_image(ob_id=0, ra=197.614455635, dec=18.438168849):
     '''
     print("Imaging")
     I=0
+    dec=new.dec
+    print(dec)
 
     imgval=pd.DataFrame(index=[0], columns=['N','V'])
     try:   
@@ -78,66 +80,4 @@ def display_image(ob_id=0, ra=197.614455635, dec=18.438168849):
 #             raise ErrorCode("The server is unable to process your request. Please try again later")
 
 
-def link_phobj(ob_id=0,ra=197.614455635, dec=18.438168849):
-    '''
 
-    :Display:: Values for sidebar link, PhotoObj.
-    :param:: No input parameters
-    :Return:: A pandas' data frame, 'Phobj' 
-    :Raise:: ValueError for missing or corrupted output.
-    
-    ..seealso:: imaging_values.__doc__
-    '''
-    sql_query=("select b.mode, b.mdj, b.nDetect-1, b.parentID, b.nChild" +"b.extinction_r, b.petroRad, b.petroRadErr_r from PhotoObj b where b.objID="+ str(test1.ob_id))
-    Phobj=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
-    try:        
-        if Phobj.empty:
-            raise ValueError("There is no photo data corresponding to your object")
-        else:
-            return Phobj
-    except:
-        print("Unexpected error: " + sys.exc_info()[0])
-        return 0
-        
-def link_phtag():
-    '''
-
-    :Display:: Values for sidebar link, PhotoTag.
-    :param:: No input parameters.
-    :Return:: A pandas' data frame, 'Phtag' 
-    :Raise:: ValueError for missing or corrupted data.
-    
-    ..seealso:: imaging_values.__doc__
-    '''
-    sql_query=("select * from PhotoTag g where g.objID=" + str(test1.ob_id))
-    Phtag=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))     
-    try:        
-        if Phtag.empty:
-            raise ValueError("There are no tags corresponding to your query")
-        else:
-            return Phtag
-    except:
-        print("Unexpected error: " + str(sys.exc_info()[0]))
-        return 0
-
-def link_phz():
-    '''
-
-    :Display:: Values for sidebar link, PhotoZ.
-    :param: No input parameters.
-    :Return:: A pandas' data frame, 'Phz' 
-    :Raise:: ValueError for missing or corrupted output.
-    
-    ..seealso:: imaging_values.__doc__
-    '''
-
-    sql_query=("select h.z,h.zerr from Photoz h where h.objID ="+ str(test1.ob_id))
-    Phz=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
-    try:        
-        if Phz.empty:
-            raise ValueError("There is no data corresponding to your query")
-        else:
-            return Phz
-    except:
-        print("Unexpected error: "+ print(sys.exc_info()[0]))
-        return 0

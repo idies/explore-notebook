@@ -1,21 +1,25 @@
 #coding: utf-8
 #!/usr/bin/env python import *
 
-import imports
+from fn_imports import *
 from imports import *
+import getpass
 '''
 python file containing miscellaneous functions
 this file can be accessed by all other display functions
 '''
-try:
-    token=Authentication.getToken()
-    if token is None:
-        mv.Auth()
-except (NameError, TypeError) as e:
-    print(str(e)+" Please verify your credentials and try again")
-    mv.Auth()
-else:
-    token = Authentication.getToken()
+    
+def get_radec(objid):
+    
+    
+    x=pd.DataFrame(index=[0], columns=["N","V"])
+    x["N"]=pd.Series([], dtype=str)
+    x["V"]=pd.Series([], dtype=object)
+    sql_query="select * from FIRST where objID= " +str(objid)
+    x=CasJobs.executeQuery(sql=sql_query, context=data_release, format="pandas") 
+    ra=x[0]['ra']
+    dec=[0]['dec']
+    return(str(ra)+str(dec))
     
 def get_objid(ra=197.614455635, dec=18.438168849):
     '''
@@ -83,8 +87,10 @@ def Auth():
     '''
 ## Authentication token for SciServer ##
     try:
+        
         auth_username=getpass.getpass('User Name: ')
         auth_pass=getpass.getpass('Password: ')
+        
         token=Authentication.login(auth_username,auth_pass)
     except (ValueError, TypeError) as e:
         print(str(e) + "Please verify your username and password and try again")
@@ -124,3 +130,13 @@ def view(df):
     s += '</script>'
 
     return(HTML(s+css))
+
+try:
+    token=Authentication.getToken()
+    if token is None:
+        Auth()
+except (NameError, TypeError) as e:
+    print(str(e)+" Please verify your credentials and try again")
+    Auth()
+else:
+    token = Authentication.getToken()

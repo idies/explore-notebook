@@ -17,7 +17,7 @@ from imports import *
 
 token=Authentication.getToken
 
-def display_apoge(apo_id=0):
+def display_apoge(specid=0):
     '''
 
     :Display:: Primary values for the infrared spectrum section of the query.
@@ -29,11 +29,11 @@ def display_apoge(apo_id=0):
     '''
     print("APOGEE")
     I=0
-    apo_id=val[3]
+    specid=val[3]
     p_id=val[0]
     Apoge=pd.DataFrame(index=[0], columns=['N','V'])
     try:
-        sql_query=("select p.j,p.j_err,p.h,p.h_err,p.k,p.k_err, p.irac_4_5, p.irac_4_5_err, p.src_4_5 from apogeeObject p where p.apogee_id= " + str(apo_id))
+        sql_query=("select p.j,p.j_err,p.h,p.h_err,p.k,p.k_err, p.irac_4_5, p.irac_4_5_err, p.src_4_5 from apogeeObject p where p.apogee_id= " + str(specid))
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format="pandas")
         a=np.transpose(a)
         if a.empty:
@@ -45,7 +45,7 @@ def display_apoge(apo_id=0):
                 Apoge.loc[I]=((row.name,row[0]))
                 I+=1
     
-        sql_query=("select p.j,p.j_err,p.h,p.h_err,p.k,p.k_err, p.irac_4_5, p.irac_4_5_err, p.src_4_5 from apogeeObject p where p.apogee_id= " + str(apo_id))
+        sql_query=("select p.j,p.j_err,p.h,p.h_err,p.k,p.k_err, p.irac_4_5, p.irac_4_5_err, p.src_4_5 from apogeeObject p where p.apogee_id= " + str(specid))
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format="pandas")
         a=np.transpose(a)
         if a.empty:
@@ -58,7 +58,7 @@ def display_apoge(apo_id=0):
                 I+=1
             Apoge.loc[I]=('*','*')
             I+=1
-        sql_query=("select l.vhelio_avg, l.vscatter from apogeeStar l where l.apogee_id= " + str(apo_id))
+        sql_query=("select l.vhelio_avg, l.vscatter from apogeeStar l where l.apogee_id= " + str(specid))
         a=SciServer.CasJobs.executeQuery(sql=sql_query, context=data_release, format="pandas")
         np.transpose(a)
         if a.empty:
@@ -96,28 +96,3 @@ def link_visit():
     print("....")
 
 
-def link_apogestar():
-    try:
-        sql_query="select * from apogeeStar n where n.apogee_id="+ str(p)
-        a=SciServer,CasJobs,executeQuery(sql=sql_query, context='DR14',format='pandas')
-        if a.empty:
-            raise ValueError("No APOGEE star data (APOGEEE data in derived radial velocity) is available for the IR spectrum of this object")
-            pass
-    except:
-        print("Unexpected error: " + str(sys.exc_info()[0]))
-        return None
-    else:
-        return a
-
-def link_aspcap():
-    try:
-        sql_query="select * from aspcapStar n where n.apogee_id="+ str(p)
-        a=SciServer,CasJobs,executeQuery(sql=sql_query, context='DR14',format='pandas')
-        if a.empty:
-            raise ValueError("No ASPCAP data is available for the IR spectrum of this object")
-            pass
-    except:
-        print("Unexpected error: " + str(sys.exc_info()[0]))
-        return None
-    else:
-        return a

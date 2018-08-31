@@ -59,22 +59,3 @@ def display_opspec(specID=0, ra=0, dec=0):
 #         else:
 #             raise ErrorCode("The server is unable to process your request. Please try again later")
 
-def link_plate():    
-    """
-    
-    :Display:: Values for sidebar link, Plate 
-    :param:: No input parameter. 
-    :Return:: A pandas' data frame, 'Plate' .
-    :Raises:: Exception ValueError for missing image.
-    
-    ..seealso:: spectra_values.__doc__
-    """
-    try:
-        sql_query=('select * from PlateX l where l.specObjID='+ str(specID))
-        Plate=(np.transpose(SkyServer.sqlSearch(sql=sql_release, dataRelease=data_release)))
-        if Plate.empty:
-            raise ValueError("There are no Plate values for this object")
-        else:
-            return Plate
-    except TimeoutError:
-        print("Timeout error: Please increase queue or verify your request before trying again. ")
