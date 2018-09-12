@@ -13,8 +13,9 @@ Optical spectrum aspects of the celestial body in question.
 
 #from img_cut import *
 from imports import *
+import missing_values
 
-token=Authentication.getToken
+token=Authentication.getToken()
 
 def display_opspec(specID=0, ra=0, dec=0):
     '''
@@ -31,8 +32,7 @@ def display_opspec(specID=0, ra=0, dec=0):
     optspec=pd.DataFrame(index=[0], columns=['N','V'])
     I=0
     if(specID is 0 and ra is not 0):
-        specID=mv.get_specid(ra,dec)
-    
+        specID=missing_values.get_specid(ra,dec)
     try:
         sql_query=("select a.specObjID, a.fiberID, a.mjd, a.plate, a.survey, a.programname, a.instrument,a.sourceType,a.z, a.zErr, a.class, a.velDisp, a.velDispErr from SpecObjAll a where a.specObjID=" +str(specID))
         a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
@@ -59,3 +59,23 @@ def display_opspec(specID=0, ra=0, dec=0):
 #         else:
 #             raise ErrorCode("The server is unable to process your request. Please try again later")
 
+def link_plate():    
+    """
+    
+    :Display:: Values for sidebar link, Plate 
+    :param:: No input parameter. 
+    :Return:: A pandas' data frame, 'Plate' .
+    :Raises:: Exception ValueError for missing image.
+    
+    ..seealso:: spectra_values.__doc__
+    """
+    try:
+        sql_query=('select * from PlateX l where l.specObjID='+ str(specID))
+        Plate=(np.transpose(SkyServer.sqlSearch(sql=sql_release, dataRelease=data_release)))
+        if Plate.empty:
+            raise ValueError("There are no Plate values for this object")
+        else:
+            return Plate
+    except TimeoutError:
+        print("Timeout error: Please increase queue or verify your request before trying again. ")
+        
