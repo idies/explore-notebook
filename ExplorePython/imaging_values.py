@@ -11,73 +11,95 @@ Photometric aspects of the celestial body in question.
 :param:: 'a' - temporary data frame; consolidates o/p to a single format  
 :param:: I(capital i["eye"]) is the counter; indicating the next row of the data frame. 
 '''
-
-#from img_cut import *
 from imports import *
-import new
-token=Authentication.getToken()
+import missing_values as mv
+import getpass
 
-def display_image(ob_id=1237668296598749280, ra=197.614455635, dec=18.438168849):
-    '''
+''' 
+:Display:: Primary values for the imaging portion of the query.
+:param:: No input parameters.
+:Return:: A pandas' data frame, 'imgval'.
 
-    :Display:: Primary values for the imaging portion of the query.
-    :param:: No input parameters.
-    :Return:: A pandas' data frame, 'imgval'.
-    :Raise:: Exception for a KeyboardInterrupt.
-    
-    ..seealso:: imaging_values.__doc__
-    '''
+..seealso:: imaging_values.__doc__
+'''
+
+try:
+
+
     print("Imaging")
-    I=0
-    dec=new.dec
-    print(dec)
 
-    imgval=pd.DataFrame(index=[0], columns=['N','V'])
-    try:   
-        sql_query=("select p.clean, p.type, p.u, p.g, p.r , p.I, p.z, p.err_u, p.err_g," + " p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " + str(ob_id))
-        a=(np.transpose(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release)))
-        print(a)
-        try:
-            if a.empty:
-                print("Warning: There is no imaging data for this object. " + 
-                      "Indistinct features hinder observations. Check input and try again ")
-                return 0
-            else:
-                for index,row in a.iterrows():
-                    imgval.loc[I]=((row.name,row[0]))
-                    I+=1
-        except Exception:
-            print("Unexpected error: "+ str(sys.exc_info()[0]))
-            sys.exit()
-        sql_query=("select z.spiral from zooSpec z where z.objid="+ str(ob_id))
-        a=(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
-        if a.empty:
-            s=0
-        else:
-            s=a.index[0]
-        sql_query=("select z.elliptical from zooSpec z where z.objid="+ str(ob_id))
-        a=(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
-        if a.empty:
-            e=0
-        else:
-            e=a.index[0]
-        if ((s==1) or (s>e)):
-            imgval.iloc[I]=('Morphology','Spiral')
+    I=0 
+    if(bool(output_text1.value) is True):
+        ra=output_text1.value
+        dec=output_text2.value
+    if(ra is 0.0 and dec is 0.0):
+        print("Missing: function arguments(ra,dec)")
+        pass
+    elif (ra is 197.614455635 and dec is 18.438168849):
+        print("Invalid input argument. Display: Default object specs displayed")
+        ob_id=1237668296598749280.0
+    else:
+        ob_id=objid
+#         ob_id='f{:.0f}'.format(missing_values.get_objid())
+#          t=np.transpose(t)
+#         t1=str(t)      
+#         t2=t1[(len(t1)) - 1]
+
+#         if (int(t2) is not 0):
+#             ob_id=float(t1)
+#             #ob_id=float(ob_id)
+#             #ob_id=t1
+#     t3=t1+"1"
+#     print(t3)
+#     ob_id=float(t3)
+#     print("obid %f" %ob_id)
+#     ob_id='f{:.1f}'.format(ob_id)
+#     ob_id=float(ob_id)
+    print(ob_id)    
+    imgval=pd.DataFrame(index=[0,0], columns=["N","V"])
+    imgval["N"]=pd.Series([], dtype=str)
+    imgval["V"]=pd.Series([], dtype=object)
+
+    sql_query=("select p.clean, p.type, p.u, p.g, p.r ,p.I, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z from PhotoObjAll p where p.objID= " +str(ob_id))
+
+    a=(CasJobs.executeQuery(sql=sql_query,context=data_release, format='pandas'))
+    a=np.transpose(a)
+
+    if a.empty:
+        print("Warning: There is no imaging data for this object. Indistinct features hinder observations. Check input and try again")
+        pass
+    else:
+        for index,row in a.iterrows():
+            imgval.loc[I]=((row.name,row[0]))
             I+=1
-        elif ((e==1) or (e>s)) :
-            imgval.iloc[I]=('Morphology','Elliptical')
-            I+=1
-        else:
-            imgval.iloc[I]=('Morphology','Uncertain')
-            I+=1
-        return imgval
-    except TimeoutError as e:
-        print("Server timed out. Please verify your query or increase queue")
-        return ""
-#         if (e==500):
-#             pass
-#         else:
-#             raise ErrorCode("The server is unable to process your request. Please try again later")
+
+    sql_query=("select z.spiral from zooSpec z where z.objid="+ str(ob_id))
+    a=(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
+
+    if a.empty:
+        s=0
+    else:
+        s=a.iloc[0][0]
+    sql_query=("select z.elliptical from zooSpec z where z.objid="+ str(ob_id))
+    a=(SkyServer.sqlSearch(sql=sql_query, dataRelease=data_release))
+
+    if a.empty:
+        e=0
+    else:
+        e=a.iloc[0][0]
+    if ((s is 1) or (s>e)):
+        imgval.iloc[I]=('Morphology','Spiral')
+        I+=1
+    elif ((e is 1) or (e>s)) :
+        imgval.iloc[I]=('Morphology','Elliptical')
+        I+=1
+    else:
+        imgval.iloc[I]=('Morphology','Uncertain')
+        I+=1
+        imgval
+except (NameError, TypeError, TimeoutError) as e:
+        print("Unexpected error: "+ str(e))
+        pass
 
 
 
