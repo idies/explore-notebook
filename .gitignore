@@ -1,6 +1,5 @@
 git config --global core.excludesfile '~/.ipynb_checkpoints'
 
-NEWS.txt
 */.exe
 */.dll
 .ipynb_checkpoints
