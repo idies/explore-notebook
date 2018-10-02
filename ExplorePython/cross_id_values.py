@@ -16,14 +16,14 @@ import missing_values as mv
 
 :Display:: Primary values for the cross identification section of the query.
 :param:: No input parameters necessary
-:Return:: A pandas' data frame, 'tabel' 
+:Return:: A pandas' data frame, 'table' 
 :Raise:: Warnings for corrupted or missing values.
 
 ..seealso:: cross_id_values.__doc__
 '''
 
 try:
-    if(bool(output_text1.value) is True):
+    if(bool(output_text1.value)):
         ra1=output_text1.value
         dec1=output_text2.value
     print("Cross Identification")

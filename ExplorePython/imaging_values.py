@@ -29,7 +29,7 @@ try:
     print("Imaging")
 
     I=0 
-    if(bool(output_text1.value) is True):
+    if(bool(output_text1.value)):
         ra=output_text1.value
         dec=output_text2.value
     if(ra is 0.0 and dec is 0.0):

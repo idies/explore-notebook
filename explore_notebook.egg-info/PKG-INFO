@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: explore-notebook
+Version: 2.0
+Summary: Explore tool for SDSS. Used in the SkyServer section.
+Home-page: https://github.com/idies/explore-notebook
+Author: Juhi Malani (@Variegatedq)
+Author-email: juhi.malani@outlook.com
+License: MIT
+Description: Explore tool for SDSS. Used in the SkyServer section.
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: Implementation :: IPython
+Classifier: Programming Language :: Python :: Implementation :: Jupyter Notebook
+Requires-Python: >=3.6.0
+Description-Content-Type: string/text/markdown

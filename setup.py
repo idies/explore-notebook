@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
- #git clone @github.com:idies/explore-notebook.git
+#git clone @github.com:idies/explore-notebook.git
 import io
 import os
 import sys
 from setuptools import setup
 from shutil import rmtree
- from setuptools import find_packages, setup, Command
- # Package meta-data.
+from setuptools import find_packages, setup, Command
+# Package meta-data.
 NAME = 'explore-notebook'
 DESCRIPTION = 'Explore tool for SDSS. Used in the SkyServer section.'
 URL = 'https://github.com/idies/explore-notebook'
@@ -15,45 +15,45 @@ EMAIL = 'juhi.malani@outlook.com'
 AUTHOR = 'Juhi Malani (@Variegatedq)'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '2.0'
- REQUIRED = [ 'numpy', 'scipy', 'pandas', 'matplotlib', 'jupyter', 'twine'
+REQUIRED = [ 'numpy', 'scipy', 'pandas', 'matplotlib', 'jupyter', 'twine'
     # 'requests', 'maya', 'records',
 ]
 EXTRAS = {}
- here = os.path.abspath(os.path.dirname(__file__))
- # Import the README and use it as the long-description.
+here = os.path.abspath(os.path.dirname(__file__))
+# Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 # try:
 #     with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 #         long_description = '\n' + f.read()
 # except FileNotFoundError:
 #     long_description = DESCRIPTION
- """Load the package's __version__.py module as a dictionary."""
+"""Load the package's __version__.py module as a dictionary."""
 about = {}
 if not VERSION:
     with open(os.path.join(here, NAME, '__version__.py')) as f:
         exec(f.read(), about)
 else:
     about['__version__'] = VERSION
- # class UploadCommand(Command):
-#     """Support setup.py upload."""
- #     description = 'Build and publish the package.'
+# class UploadCommand(Command):
+#    """Support setup.py upload."""
+#     description = 'Build and publish the package.'
 #     user_options = []
- #     @staticmethod
+#     @staticmethod
 #     def status(s):
 #         """Prints things in bold."""
 #         print('[\033[1;31;40m'.format(s))
- #     def initialize_options(self):
+#     def initialize_options(self):
 #         pass
- #     def finalize_options(self):
+#     def finalize_options(self):
 #         pass
- #     def run(self):
+#     def run(self):
 #         try:
 #             self.status('Removing previous builds…')
 #             rmtree(os.path.join(here, 'dist'))
 #         except OSError:
 #             pass
- #         self.status('Building Source and Wheel (universal) distribution…')
-#         os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+##         self.status('Building Source and Wheel (universal) distribution…')
+#          os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
  #         self.status('Uploading the package to PyPI via Twine…')
 #         os.system('twine upload dist/*')
  #         self.status('Pushing git tags…')
@@ -61,7 +61,7 @@ else:
 #         os.system('git push --tags')
         
 #         sys.exit()
- # Where the magic happens:
+# Where the magic happens:
 from setuptools import setup, find_packages
 setup(
     name=NAME,
@@ -76,7 +76,7 @@ setup(
     packages=find_packages(exclude=('Tests',)),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
-     # entry_points={
+    # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
     install_requires=REQUIRED,
@@ -85,17 +85,12 @@ setup(
     license='MIT',
     classifiers=[
         # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: IPython',
-        'Programming Language :: Python :: Implementation :: Jupyter Notebook'
-    ],
-    
-    
-    # $ setup.py publish support.
-#     cmdclass={
-#         'upload': UploadCommand,
-#     },
+	# Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+	'License :: OSI Approved :: MIT License',
+	'Programming Language :: Python',
+	'Programming Language :: Python :: 3',
+	'Programming Language :: Python :: 3.6',
+	'Programming Language :: Python :: Implementation :: IPython',
+	'Programming Language :: Python :: Implementation :: Jupyter Notebook'
+    ]
+)
