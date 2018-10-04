@@ -8,17 +8,28 @@ class Explore:
     def exploreObjID(self, objID):
         """
         Retrieves data from SkyServer using the given objID
-        Stores most data in the data object, a dataframe 
+        Stores most data in the data object, a dataframe
+        parsed flags are stored in flagStrs\
+        images are not generated for performance reasons
         """
-        sql_query="Select ra,dec,run,rerun,camcol,field,obj,specObjID,l,b,type,u,g,r,i,z,err_u,err_g,err_r,err_i,err_z,flags from PhotoObj where objID="+str(objID)
+        sql_query="""
+        SELECT p.ra,p.dec,p.run,p.rerun,p.camcol,p.field,p.obj,p.specObjID,p.l,p.b,p.type,p.u,p.g,p.r,p.i,p.z,p.err_u,p.err_g,p.err_r,p.err_i,p.err_z,p.flags,p.mjd,p.mode,p.parentID,p.nChild,p.extinction_r,p.petroRad_r,p.petroRadErr_r,Photoz.z AS Photoz,Photoz.zerr AS Photoz_err
+        FROM PhotoObj AS p 
+        LEFT JOIN Photoz ON Photoz.objID = p.objID
+        WHERE p.objID=
+        """+str(objID)
         datadf=SkyServer.sqlSearch(sql=sql_query)
         if (datadf.empty):
             print("There are currently no objects with this object ID. Please verify your input and try again")
             raise ValueError
         else:
+            datadf['mode'] = pd.Series([parseMode(datadf['mode'][0])])
+            datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['mjd'][0])])
+            datadf['ra_sexagesimal'] = pd.Series([raToSexagesimal(datadf['ra'][0])])
+            datadf['dec_sexagesimal'] = pd.Series([decToSexagesimal(datadf['dec'][0])])
+
             self.data = datadf
             self.flagStrs = getFlagStrings(self.data['flags'][0])
-            #self.image = getImage(x['ra'][0], x['dec'][0])
             return self.data
 
     def getImage(self):
@@ -31,9 +42,39 @@ class Explore:
             print("No data retreived yet. Use an explore function")
 
 def getImage(ra, dec, scale=0.7, width=512, height=512):
+    """Retrieve the image from SkyServer using the passed coordinates"""
     return SkyServer.getJpegImgCutout(ra, dec, scale, width, height, opt="")
+
+def decToSexagesimal(dec):
+    a = Angle(dec * u.deg)
+    return a.to_string(sep=':')
+def raToSexagesimal(ra):
+    ras = ''
+    if ra < 0:
+        ras = '-'
+        ra = abs(ra)
+    h = int(ra / 15)
+    m = int((ra / 15 - h) * 60)
+    s = (((ra / 15 - h) * 60) - m) * 60
+    return "{}:{}:{}".format(h,m,s)
+
+
+
+def parseMode(i):
+    modeMappings = {
+        1: "PRIMARY",
+        2: "SECONDARY",
+        3: "OTHER"
+    }
+    return modeMappings[i]
+
+def mjdToYYYYMMDD(mjd):
+    """converts mjd date of the observation of the star to YYYY/MM/DD format"""
+    t = Time(mjd, format='mjd', scale='utc', out_subfmt='date')
+    return t.iso
     
 def getFlagStrings(flags):
+    """Parses the flag Bitmask to the strings they represent"""
     flagBits = {
         'CANONICAL_CENTER': 1 << 0,
         'BRIGHT': 1 << 1,

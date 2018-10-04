@@ -27,6 +27,9 @@ import SciServer
 from SciServer import Config, Authentication, SkyServer, SkyQuery, CasJobs
 import argparse
 from IPython.display import HTML
+from astropy.time import Time
+from astropy import units as u
+from astropy.coordinates import Angle, SkyCoord
 
 '''Data Release version is currently set to DR14. DR15 rolls out 11/2018'''
 data_release="DR14"
