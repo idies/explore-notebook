@@ -1,4 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from imports import *
+
 
 class Explore:
 
@@ -12,69 +15,206 @@ class Explore:
         parsed flags are stored in flagStrs\
         images are not generated for performance reasons
         """
-        sql_query="""
-        SELECT p.ra,p.dec,p.run,p.rerun,p.camcol,p.field,p.obj,p.specObjID,p.l,p.b,p.type,p.u,p.g,p.r,p.i,p.z,p.err_u,p.err_g,p.err_r,p.err_i,p.err_z,p.flags,p.mjd,p.mode,p.parentID,p.nChild,p.extinction_r,p.petroRad_r,p.petroRadErr_r,Photoz.z AS Photoz,Photoz.zerr AS Photoz_err
-        FROM PhotoObj AS p 
-        LEFT JOIN Photoz ON Photoz.objID = p.objID
+
+        sql_query = """
+        SELECT p.type, p.ra, p.dec, p.run, p.rerun, p.camcol, p.field, p.obj, p.specObjID, p.l, p.b, p.type, p.u, p.g, p.r, p.i, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z, p.flags, p.mjd AS ImageMJD, p.mode, p.parentID, p.nChild, p.extinction_r, p.petroRad_r, p.petroRadErr_r, Photoz.z AS Photoz, Photoz.zerr AS Photoz_err, zooSpec.spiral AS Zoo1Morphology_spiral, zooSpec.elliptical AS Zoo1Morphology_elliptical, zooSpec.uncertain AS Zoo1Morphology_uncertain, s.instrument, s.class, s.z, s.zErr, s.survey, s.programname, s.sourcetype, s.velDisp, s.velDispErr, s.plate, s.mjd AS specMJD, s.fiberID
+        FROM PhotoObj AS p
+        LEFT JOIN Photoz 
+        ON Photoz.objID = p.objID
+        LEFT JOIN zooSpec 
+        ON zooSpec.objID = p.objID
+        LEFT JOIN SpecObj AS s 
+        ON s.specObjID = p.specObjID
         WHERE p.objID=
-        """+str(objID)
-        datadf=SkyServer.sqlSearch(sql=sql_query)
-        if (datadf.empty):
-            print("There are currently no objects with this object ID. Please verify your input and try again")
+        """ + str(objID)
+        datadf = SkyServer.sqlSearch(sql=sql_query)
+        if datadf.empty:
+            print('There are currently no objects with this object ID. Please verify your input and try again')
             raise ValueError
         else:
             datadf['mode'] = pd.Series([parseMode(datadf['mode'][0])])
-            datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['mjd'][0])])
-            datadf['ra_sexagesimal'] = pd.Series([raToSexagesimal(datadf['ra'][0])])
-            datadf['dec_sexagesimal'] = pd.Series([decToSexagesimal(datadf['dec'][0])])
+            datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['ImageMJD'][0])])
+            datadf['type'] = pd.Series([parseType(datadf['type'][0])])
+            datadf.insert(2, 'ra_sexagesimal',
+                          pd.Series([raToSexagesimal(datadf['ra'][0])]))
+            datadf.insert(3, 'dec_sexagesimal',
+                          pd.Series([decToSexagesimal(datadf['dec'][0])]))
 
-            self.data = datadf
-            self.flagStrs = getFlagStrings(self.data['flags'][0])
-            return self.data
+            self.alldata = datadf
+            self.flagStrs = getFlagStrings(self.alldata['flags'][0])
+            return self.alldata
 
     def getImage(self):
-        """Retrieve the image from SkyServer using already retreived coordinates"""
+        """Retrieve the image from SkyServer using already re treived coordinates"""
+
         try:
-            self.data
-            self.image = getImage(self.data['ra'][0], self.data['dec'][0])
+            self.alldata
+            self.image = getImage(self.alldata['ra'][0],
+                                  self.alldata['dec'][0])
             return self.image
         except:
-            print("No data retreived yet. Use an explore function")
+            print('No data retreived yet. Use an explore function')
 
-def getImage(ra, dec, scale=0.7, width=512, height=512):
+    def getSpecData(self):
+        """
+        Returns the spectral datapoints from the dataframe. Expects an explore function to have already been called
+        so the dataframe is populated. Will return nothing if the dataframe isn't populated.
+        """
+
+        try:
+            self.alldata
+            specCols = [
+                'instrument',
+                'class',
+                'z',
+                'zErr',
+                'survey',
+                'programname',
+                'sourcetype',
+                'velDisp',
+                'velDispErr',
+                'plate',
+                'specMJD',
+                'fiberID',
+                ]
+            return self.alldata[specCols]
+        except:
+            print('No data retrieved yet. Use an explore function')
+
+    def getImagingData(self):
+        """
+        Returns the imaging datapoints from the dataframe. Expects an explore function to have already been called
+        so the dataframe is populated. Will return nothing if the dataframe isn't populated.
+        """
+
+        try:
+            self.alldata
+            imagingCols = [
+                'u',
+                'g',
+                'r',
+                'i',
+                'z',
+                'err_u',
+                'err_g',
+                'err_r',
+                'err_i',
+                'err_z',
+                'ImageMJD',
+                'mode',
+                'parentID',
+                'nChild',
+                'extinction_r',
+                'petroRad_r',
+                'mjd_date',
+                'Photoz',
+                'Photoz_err',
+                'Zoo1Morphology_elliptical',
+                'Zoo1Morphology_spiral',
+                'Zoo1Morphology_uncertain',
+                ]
+            return self.alldata[imagingCols]
+        except:
+            print('No data retrieved yet. Use an explore function')
+
+    def getBasicData(self):
+        """
+        Returns the basic datapoints from the dataframe. Expects an explore function to have already been called
+        so the dataframe is populated. Will return nothing if the dataframe isn't populated.
+        """
+
+        try:
+            self.alldata
+            basicCols = [
+                'type',
+                'ra',
+                'dec',
+                'ra_sexagesimal',
+                'dec_sexagesimal',
+                'run',
+                'rerun',
+                'camcol',
+                'field',
+                'obj',
+                'specObjID',
+                'l',
+                'b',
+                ]
+            return self.alldata[basicCols]
+        except:
+            print('No data retrieved yet. Use an explore function')
+
+
+def getImage(
+    ra,
+    dec,
+    scale=0.7,
+    width=512,
+    height=512,
+    ):
     """Retrieve the image from SkyServer using the passed coordinates"""
-    return SkyServer.getJpegImgCutout(ra, dec, scale, width, height, opt="")
+
+    return SkyServer.getJpegImgCutout(
+        ra,
+        dec,
+        scale,
+        width,
+        height,
+        opt='',
+        )
+
 
 def decToSexagesimal(dec):
+    """converts declination coordinates in decimal degrees to sexagesimal"""
     a = Angle(dec * u.deg)
     return a.to_string(sep=':')
+
+
 def raToSexagesimal(ra):
+    """converts right ascension coordinates in decimal degrees to sexagesimal"""
     ras = ''
     if ra < 0:
         ras = '-'
         ra = abs(ra)
     h = int(ra / 15)
     m = int((ra / 15 - h) * 60)
-    s = (((ra / 15 - h) * 60) - m) * 60
-    return "{}:{}:{}".format(h,m,s)
+    s = ((ra / 15 - h) * 60 - m) * 60
+    return '{}:{}:{}'.format(h, m, s)
 
+
+def parseType(i):
+    """parses the type of the object to a string"""
+    typeMappings = {
+        0: 'UNKNOWN',
+        1: 'COSMIC_RAY',
+        2: 'DEFECT',
+        3: 'GALAXY',
+        4: 'GHOST',
+        5: 'KNOWNOBJ',
+        6: 'STAR',
+        7: 'TRAIL',
+        8: 'SKY',
+        9: 'NOTATYPE',
+        }
+    return typeMappings[i]
 
 
 def parseMode(i):
-    modeMappings = {
-        1: "PRIMARY",
-        2: "SECONDARY",
-        3: "OTHER"
-    }
+    """parses the mode of a the photo to a string"""
+    modeMappings = {1: 'PRIMARY', 2: 'SECONDARY', 3: 'OTHER'}
     return modeMappings[i]
+
 
 def mjdToYYYYMMDD(mjd):
     """converts mjd date of the observation of the star to YYYY/MM/DD format"""
+
     t = Time(mjd, format='mjd', scale='utc', out_subfmt='date')
     return t.iso
-    
+
+
 def getFlagStrings(flags):
     """Parses the flag Bitmask to the strings they represent"""
+
     flagBits = {
         'CANONICAL_CENTER': 1 << 0,
         'BRIGHT': 1 << 1,
@@ -136,10 +276,14 @@ def getFlagStrings(flags):
         'MAYBE_EGHOST': 1 << 57,
         'NOTCHECKED_CENTER': 1 << 58,
         'HAS_SATUR_DN': 1 << 59,
-        'DEBLEND_PEEPHOLE': 1 << 60
-    }
+        'DEBLEND_PEEPHOLE': 1 << 60,
+        }
     flagStrs = []
-    for k, v in flagBits.items():
+    for (k, v) in flagBits.items():
         if flags & v:
             flagStrs.append(k)
     return flagStrs
+
+
+
+			
