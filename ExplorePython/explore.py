@@ -5,8 +5,23 @@ from imports import *
 
 class Explore:
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        """
+        constructor for explore object, uses kwargs
+        
+        Keyword Arguments:
+        objID -- the object ID of the celestial body
+        ra -- right ascension, must be used with dec
+        dec - declination, must be used with ra
+        """
+        
+        if "objID" in kwargs:
+            self.exploreObjID(kwargs.pop('objID'))
+        elif 'ra' in kwargs and 'dec' in kwargs:
+            self.exploreRaDec(kwargs.pop('ra'), kwargs.pop('dec'))
+        else:
+            raise ValueError("Invalid arguments")
+    
 
     def exploreObjID(self, objID):
         """
@@ -17,7 +32,7 @@ class Explore:
         """
 
         sql_query = """
-        SELECT p.type, p.ra, p.dec, p.run, p.rerun, p.camcol, p.field, p.obj, p.specObjID, p.l, p.b, p.type, p.u, p.g, p.r, p.i, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z, p.flags, p.mjd AS ImageMJD, p.mode, p.parentID, p.nChild, p.extinction_r, p.petroRad_r, p.petroRadErr_r, Photoz.z AS Photoz, Photoz.zerr AS Photoz_err, zooSpec.spiral AS Zoo1Morphology_spiral, zooSpec.elliptical AS Zoo1Morphology_elliptical, zooSpec.uncertain AS Zoo1Morphology_uncertain, s.instrument, s.class, s.z, s.zErr, s.survey, s.programname, s.sourcetype, s.velDisp, s.velDispErr, s.plate, s.mjd AS specMJD, s.fiberID
+        SELECT p.type, p.ra, p.dec, p.run, p.rerun, p.camcol, p.field, p.obj, p.specObjID, p.objID p.l, p.b, p.type, p.u, p.g, p.r, p.i, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z, p.flags, p.mjd AS ImageMJD, p.mode, p.parentID, p.nChild, p.extinction_r, p.petroRad_r, p.petroRadErr_r, Photoz.z AS Photoz, Photoz.zerr AS Photoz_err, zooSpec.spiral AS Zoo1Morphology_spiral, zooSpec.elliptical AS Zoo1Morphology_elliptical, zooSpec.uncertain AS Zoo1Morphology_uncertain, s.instrument, s.class, s.z, s.zErr, s.survey, s.programname, s.sourcetype, s.velDisp, s.velDispErr, s.plate, s.mjd AS specMJD, s.fiberID
         FROM PhotoObj AS p
         LEFT JOIN Photoz 
         ON Photoz.objID = p.objID
@@ -27,25 +42,40 @@ class Explore:
         ON s.specObjID = p.specObjID
         WHERE p.objID=
         """ + str(objID)
-        datadf = SkyServer.sqlSearch(sql=sql_query)
-        if datadf.empty:
-            print('There are currently no objects with this object ID. Please verify your input and try again')
-            raise ValueError
+        try:
+            datadf = SkyServer.sqlSearch(sql=sql_query)
+        except Exception as e:
+            print(e)
         else:
-            datadf['mode'] = pd.Series([parseMode(datadf['mode'][0])])
-            datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['ImageMJD'][0])])
-            datadf['type'] = pd.Series([parseType(datadf['type'][0])])
-            datadf.insert(2, 'ra_sexagesimal',
-                          pd.Series([raToSexagesimal(datadf['ra'][0])]))
-            datadf.insert(3, 'dec_sexagesimal',
-                          pd.Series([decToSexagesimal(datadf['dec'][0])]))
+            if datadf.empty:
+                print('There are currently no objects with this object ID. Please verify your input and try again')
+                raise ValueError
+            else:
+                datadf['mode'] = pd.Series([parseMode(datadf['mode'][0])])
+                datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['ImageMJD'][0])])
+                datadf['type'] = pd.Series([parseType(datadf['type'][0])])
+                datadf.insert(2, 'ra_sexagesimal',
+                              pd.Series([raToSexagesimal(datadf['ra'][0])]))
+                datadf.insert(3, 'dec_sexagesimal',
+                              pd.Series([decToSexagesimal(datadf['dec'][0])]))
 
-            self.alldata = datadf
-            self.flagStrs = getFlagStrings(self.alldata['flags'][0])
-            return self.alldata
+                self.alldata = datadf
+                self.flagStrs = getFlagStrings(self.alldata['flags'][0])
+
+    def exploreRaDec(self, ra, dec):
+        sql_query = """
+        select objID
+        from dbo.fGetNearestObjEq(""" + str(ra) + """, """ + str(dec) + """,1) 
+        """
+        try:
+            objID = SkyServer.sqlSearch(sql = sql_query)['objID'][0]
+        except Exception as e:
+            print(e)
+        else:
+            self.exploreObjID(objID)
 
     def getImage(self):
-        """Retrieve the image from SkyServer using already re treived coordinates"""
+        """Retrieve the image from SkyServer using already retreived coordinates"""
 
         try:
             self.alldata
@@ -53,7 +83,7 @@ class Explore:
                                   self.alldata['dec'][0])
             return self.image
         except:
-            print('No data retreived yet. Use an explore function')
+            print('No data retreived yet. Please use a constructor')
 
     def getSpecData(self):
         """
@@ -143,6 +173,9 @@ class Explore:
             return self.alldata[basicCols]
         except:
             print('No data retrieved yet. Use an explore function')
+    def get(self, field):
+        """syntactic sugar to make accessing data easier"""
+        return self.alldata[field][0]
 
 
 def getImage(
