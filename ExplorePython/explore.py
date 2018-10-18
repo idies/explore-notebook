@@ -3,6 +3,7 @@
 from imports import *
 
 
+
 class Explore:
 
     def __init__(self, **kwargs):
@@ -19,6 +20,10 @@ class Explore:
             self.exploreObjID(kwargs.pop('objID'))
         elif 'ra' in kwargs and 'dec' in kwargs:
             self.exploreRaDec(kwargs.pop('ra'), kwargs.pop('dec'))
+        elif 'skyVersion' in kwargs and 'run' in kwargs and 'rerun' in kwargs and 'camcol' in kwargs and 'field' in kwargs and 'obj' in kwargs:
+            self.exploreSDSS(skyVersion = kwargs.pop('skyVersion'), run = kwargs.pop('run'), rerun = kwargs.pop('rerun'), camcol = kwargs.pop('camcol'), field = kwargs.pop('field'), obj = kwargs.pop('obj'))
+        elif 'plate' in kwargs and 'fiber' in kwargs and 'mjd' in kwargs:
+            self.explorePlateMJDFiber(plate = kwargs.pop('plate'), mjd = kwargs.pop('mjd'), fiber = kwargs.pop('fiber'))
         else:
             raise ValueError("Invalid arguments")
     
@@ -27,12 +32,12 @@ class Explore:
         """
         Retrieves data from SkyServer using the given objID
         Stores most data in the data object, a dataframe
-        parsed flags are stored in flagStrs\
+        parsed flags are stored in flagStrs
         images are not generated for performance reasons
         """
 
         sql_query = """
-        SELECT p.type, p.ra, p.dec, p.run, p.rerun, p.camcol, p.field, p.obj, p.specObjID, p.objID p.l, p.b, p.type, p.u, p.g, p.r, p.i, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z, p.flags, p.mjd AS ImageMJD, p.mode, p.parentID, p.nChild, p.extinction_r, p.petroRad_r, p.petroRadErr_r, Photoz.z AS Photoz, Photoz.zerr AS Photoz_err, zooSpec.spiral AS Zoo1Morphology_spiral, zooSpec.elliptical AS Zoo1Morphology_elliptical, zooSpec.uncertain AS Zoo1Morphology_uncertain, s.instrument, s.class, s.z, s.zErr, s.survey, s.programname, s.sourcetype, s.velDisp, s.velDispErr, s.plate, s.mjd AS specMJD, s.fiberID
+        SELECT p.type, p.ra, p.dec, p.run, p.rerun, p.camcol, p.field, p.obj, p.specObjID, p.objID, p.l, p.b, p.type, p.u, p.g, p.r, p.i, p.z, p.err_u, p.err_g, p.err_r, p.err_i, p.err_z, p.flags, p.mjd AS ImageMJD, p.mode, p.parentID, p.nChild, p.extinction_r, p.petroRad_r, p.petroRadErr_r, Photoz.z AS Photoz, Photoz.zerr AS Photoz_err, zooSpec.spiral AS Zoo1Morphology_spiral, zooSpec.elliptical AS Zoo1Morphology_elliptical, zooSpec.uncertain AS Zoo1Morphology_uncertain, s.instrument, s.class, s.z, s.zErr, s.survey, s.programname, s.sourcetype, s.velDisp, s.velDispErr, s.plate, s.mjd AS specMJD, s.fiberID
         FROM PhotoObj AS p
         LEFT JOIN Photoz 
         ON Photoz.objID = p.objID
@@ -64,7 +69,7 @@ class Explore:
 
     def exploreRaDec(self, ra, dec):
         sql_query = """
-        select objID
+        SELECT objID
         from dbo.fGetNearestObjEq(""" + str(ra) + """, """ + str(dec) + """,1) 
         """
         try:
@@ -74,6 +79,31 @@ class Explore:
         else:
             self.exploreObjID(objID)
 
+    def exploreSDSS(self, skyVersion, run, rerun, camcol, field, obj):
+        sql_query = """
+        SELECT [dbo].[fObjidFromSDSS](""" + str(skyVersion) + """, """ + str(run) + """, """ + str(rerun) + """, """ + str(camcol) + """, """ + str(field) + """, """ + str(obj) + """) AS Objid
+        """
+        print(sql_query)
+        objID = SkyServer.sqlSearch(sql = sql_query)['Objid'][0]
+        self.exploreObjID(objID)
+        
+    def explorePlateMJDFiber(self, plate, mjd, fiber):
+        sql_query = """
+        SELECT p.objID
+        FROM SpecObj AS s
+        LEFT JOIN PhotoObj as p
+        ON p.specObjID = s.specObjID
+        WHERE s.plate = """ + str(plate) + " AND s.mjd = " + str(mjd) + " AND s.fiberID = " + str(fiber)
+        try:
+            objID = SkyServer.sqlSearch(sql = sql_query)['objID'][0]
+        except Exception as e:
+            print("ERROR: ")
+            print(e)
+        else:
+            self.exploreObjID(objID)
+        
+        
+
     def getImage(self):
         """Retrieve the image from SkyServer using already retreived coordinates"""
 
@@ -81,9 +111,25 @@ class Explore:
             self.alldata
             self.image = getImage(self.alldata['ra'][0],
                                   self.alldata['dec'][0])
-            return self.image
+            plt.imshow(self.image)
         except:
             print('No data retreived yet. Please use a constructor')
+            
+    def getSpectrumImage(self):
+        """Retrieve the spectrum image from specobj"""
+        try:
+            self.alldata
+            sql_query = """
+            SELECT img 
+            FROM SpecObj AS s
+            WHERE s.specObjID = """ + str(self.get('specObjID'))
+            imgStr = SkyServer.sqlSearch(sql = sql_query)['img'][0]
+            img = Image.open(io.BytesIO(bytes.fromhex(imgStr[2:])))
+            return img
+        except Exception as e:
+            print("ERROR: ")
+            print(e)
+            return None
 
     def getSpecData(self):
         """
@@ -186,15 +232,18 @@ def getImage(
     height=512,
     ):
     """Retrieve the image from SkyServer using the passed coordinates"""
-
-    return SkyServer.getJpegImgCutout(
-        ra,
-        dec,
-        scale,
-        width,
-        height,
-        opt='',
-        )
+    try:
+        img = SkyServer.getJpegImgCutout(
+            ra,
+            dec,
+            scale,
+            width,
+            height,
+            opt='',
+            )
+    except Exception as e: 
+        print("ERROR: ")
+        print(e)
 
 
 def decToSexagesimal(dec):
