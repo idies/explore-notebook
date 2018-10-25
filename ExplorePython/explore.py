@@ -27,6 +27,57 @@ class Explore:
         else:
             raise ValueError("Invalid arguments")
     
+    def _ipython_display_(self):
+        CSS = """
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+        table.dataframe {
+            border-collapse: collapse;
+            border: none;
+        }
+        table.dataframe tr, table.dataframe th {
+            border: none;
+        }
+        table.dataframe tr td:nth-child(odd), table.dataframe tr th:nth-child(odd){ 
+            background: white;
+        }
+        table.dataframe tr td:nth-child(even), table.dataframe tr th:nth-child(even){
+            background: lightgray
+        }
+        table.dataframe thead {
+            border-bottom: 2px gray solid;
+        }
+        table.dataframe td, table.dataframe th {
+            margin: 0;
+            padding-left: 0.25em;
+            padding-right: 0.25em;
+        }
+        """
+        
+        
+        try:
+            self.alldata
+            basic = "<h3>Basic Data</h3>" + self.getBasicData().to_html(index = False)
+            imaging = "<h3>Imaging Data</h3>" +self.getImagingData().to_html(index = False)
+            spec = "<h3>Spectral Data</h3>" +self.getSpecData().to_html(index = False)
+            display(HTML('<style>' + CSS + '</style>'))
+            display(HTML(basic))
+            display(HTML(imaging))
+            self.getImage()
+            if self.image is not None:
+                plt.axis('off')
+                plt.imshow(self.image)
+                plt.show()
+            display(HTML(spec))
+            self.getSpectrumImage()
+            self.specThumbnail = self.specIm.copy()
+            self.specThumbnail.thumbnail((512, 512))
+            display(self.specThumbnail)
+        except Exception as e:
+            print ("ERROR")
+            print(e)
 
     def exploreObjID(self, objID):
         """
@@ -109,11 +160,12 @@ class Explore:
 
         try:
             self.alldata
-            self.image = getImage(self.alldata['ra'][0],
-                                  self.alldata['dec'][0])
-            plt.imshow(self.image)
-        except:
-            print('No data retreived yet. Please use a constructor')
+            retrImage = getImage(self.alldata['ra'][0], self.alldata['dec'][0])
+            if retrImage is None:
+                raise Exception
+            self.image = retrImage
+        except Exception as e:
+            print(e)
             
     def getSpectrumImage(self):
         """Retrieve the spectrum image from specobj"""
@@ -125,6 +177,7 @@ class Explore:
             WHERE s.specObjID = """ + str(self.get('specObjID'))
             imgStr = SkyServer.sqlSearch(sql = sql_query)['img'][0]
             img = Image.open(io.BytesIO(bytes.fromhex(imgStr[2:])))
+            self.specIm = img
             return img
         except Exception as e:
             print("ERROR: ")
@@ -233,14 +286,8 @@ def getImage(
     ):
     """Retrieve the image from SkyServer using the passed coordinates"""
     try:
-        img = SkyServer.getJpegImgCutout(
-            ra,
-            dec,
-            scale,
-            width,
-            height,
-            opt='',
-            )
+        img = SkyServer.getJpegImgCutout(ra, dec, scale, width, height, opt='')
+        return img
     except Exception as e: 
         print("ERROR: ")
         print(e)
