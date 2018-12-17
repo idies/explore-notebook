@@ -12,8 +12,19 @@ class Explore:
         
         Keyword Arguments:
         objID -- the object ID of the celestial body
+        
         ra -- right ascension, must be used with dec
-        dec - declination, must be used with ra
+        dec -- declination, must be used with ra
+        
+        skyVersion 
+        run
+        rerun
+        field
+        obj
+        
+        plate -- plate observation was taken on
+        fiber
+        mjd -- modified julian date of observation
         """
         
         if "objID" in kwargs:
@@ -29,6 +40,7 @@ class Explore:
     
     def _ipython_display_(self):
         CSS = """
+        <style>
         body {
             margin: 0;
             font-family: Arial;
@@ -54,6 +66,7 @@ class Explore:
             padding-left: 0.25em;
             padding-right: 0.25em;
         }
+        </style>
         """
         
         
@@ -62,21 +75,23 @@ class Explore:
             basic = "<h3>Basic Data</h3>" + self.getBasicData().to_html(index = False)
             imaging = "<h3>Imaging Data</h3>" +self.getImagingData().to_html(index = False)
             spec = "<h3>Spectral Data</h3>" +self.getSpecData().to_html(index = False)
-            display(HTML('<style>' + CSS + '</style>'))
+            display(HTML(CSS))
             display(HTML(basic))
+            display(HTML(self.getFlagHTML()))
             display(HTML(imaging))
             self.getImage()
             if self.image is not None:
                 plt.axis('off')
-                plt.imshow(self.image)
+                plt.imshow(self.image, interpolation = 'nearest', shape = (400, 400))
                 plt.show()
             display(HTML(spec))
             self.getSpectrumImage()
-            self.specThumbnail = self.specIm.copy()
-            self.specThumbnail.thumbnail((512, 512))
-            display(self.specThumbnail)
+            if self.specIm is not None:
+                self.specThumbnail = self.specIm.copy()
+                self.specThumbnail.thumbnail((512, 512))
+                display(self.specThumbnail)
         except Exception as e:
-            print ("ERROR")
+            print ("ERROR in disp")
             print(e)
 
     def exploreObjID(self, objID):
@@ -105,7 +120,6 @@ class Explore:
         else:
             if datadf.empty:
                 print('There are currently no objects with this object ID. Please verify your input and try again')
-                raise ValueError
             else:
                 datadf['mode'] = pd.Series([parseMode(datadf['mode'][0])])
                 datadf['mjd_date'] = pd.Series([mjdToYYYYMMDD(datadf['ImageMJD'][0])])
@@ -165,6 +179,7 @@ class Explore:
                 raise Exception
             self.image = retrImage
         except Exception as e:
+            self.image = None
             print(e)
             
     def getSpectrumImage(self):
@@ -180,8 +195,7 @@ class Explore:
             self.specIm = img
             return img
         except Exception as e:
-            print("ERROR: ")
-            print(e)
+            self.specIm = None
             return None
 
     def getSpecData(self):
@@ -272,6 +286,19 @@ class Explore:
             return self.alldata[basicCols]
         except:
             print('No data retrieved yet. Use an explore function')
+            
+    def getFlagHTML(self):
+        """
+        Returns the flags in html form for ipython display
+        """
+        list = "<h4>Flags:</h4><p>"
+        for f in self.flagStrs:
+            list += f
+            list += ", "
+        list = list[0: -2]
+        list += "</p>"
+        return list
+        
     def get(self, field):
         """syntactic sugar to make accessing data easier"""
         return self.alldata[field][0]
@@ -281,12 +308,12 @@ def getImage(
     ra,
     dec,
     scale=0.7,
-    width=512,
-    height=512,
+    width=600,
+    height=600,
     ):
     """Retrieve the image from SkyServer using the passed coordinates"""
     try:
-        img = SkyServer.getJpegImgCutout(ra, dec, scale, width, height, opt='')
+        img = SkyServer.getJpegImgCutout(ra, dec, scale, width, height, opt='GLS')
         return img
     except Exception as e: 
         print("ERROR: ")
